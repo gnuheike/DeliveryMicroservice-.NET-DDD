@@ -8,15 +8,15 @@ public class Location(int width, int height) : ValueObject
     private const int MaximumWidth = 10;
     private const int MinimumHeight = 1;
     private const int MaximumHeight = 10;
-    
-    public int Width { get; private set; } = width switch
+
+    public int Width { get; } = width switch
     {
         < MinimumWidth => throw new ArgumentException("Width cannot be negative"),
         > MaximumWidth => throw new ArgumentException("Width cannot be greater than 10"),
         _ => width
     };
 
-    public int Height { get; private set; } = height switch
+    public int Height { get; } = height switch
     {
         < MinimumHeight => throw new ArgumentException("Height cannot be negative"),
         > MaximumHeight => throw new ArgumentException("Height cannot be greater than 10"),
@@ -26,15 +26,18 @@ public class Location(int width, int height) : ValueObject
     public static Location CreateRandom()
     {
         var random = new Random();
-        return new Location(random.Next(1, 11), random.Next(1, 11));
+        return new Location(
+            random.Next(MinimumWidth, MaximumWidth + 1),
+            random.Next(MinimumHeight, MaximumHeight + 1)
+        );
     }
 
-    public Location SetWidth(int newWidth) 
+    public Location SetWidth(int newWidth)
     {
         return new Location(newWidth, Height);
     }
-    
-    public Location SetHeight(int newHeight) 
+
+    public Location SetHeight(int newHeight)
     {
         return new Location(Width, newHeight);
     }
