@@ -1,14 +1,12 @@
 using System;
 using DeliveryApp.Core.Domain.SharedKernel;
-
-namespace DeliveryApp.UnitTests.Core.Domain.SharedKernel;
 using FluentAssertions;
 using Xunit;
 
+namespace DeliveryApp.UnitTests.Core.Domain.SharedKernel;
 
 public class LocationShould
 {
-    
     [Fact]
     public void CreateWithValidValues()
     {
@@ -16,7 +14,7 @@ public class LocationShould
         location.Width.Should().Be(5);
         location.Height.Should().Be(5);
     }
-    
+
     [Fact]
     public void ThrowExceptionForInvalidWidth()
     {
@@ -34,7 +32,7 @@ public class LocationShould
         act1.Should().Throw<ArgumentException>();
         act2.Should().Throw<ArgumentException>();
     }
-    
+
     [Fact]
     public void CreateRandomLocationWithinValidRange()
     {
@@ -84,7 +82,7 @@ public class LocationShould
         var location2 = new Location(6, 5);
         location1.Should().NotBe(location2);
     }
-    
+
     [Fact]
     public void ShouldBeImmutable()
     {
