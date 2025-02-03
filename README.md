@@ -1,26 +1,27 @@
 ﻿# OpenApi
-Вызывать из папки DeliveryApp.Api/Adapters/Http/Contract
+Run from the folder DeliveryApp.Api/Adapters/Http/Contract
+
 ```
 cd DeliveryApp.Api/Adapters/Http/Contract/
 openapi-generator generate -i https://gitlab.com/microarch-ru/microservices/dotnet/system-design/-/raw/main/services/delivery/contracts/openapi.yml -g aspnetcore -o . --package-name OpenApi --additional-properties classModifier=abstract --additional-properties operationResultTask=true
 ```
-# БД
+# Database
 ```
 dotnet tool install --global dotnet-ef
 dotnet tool update --global dotnet-ef
 dotnet add package Microsoft.EntityFrameworkCore.Design
 ```
-[Подробнее про dotnet cli](https://learn.microsoft.com/ru-ru/ef/core/cli/dotnet)
+[More about dotnet cli](https://learn.microsoft.com/ru-ru/ef/core/cli/dotnet)
 
-# Миграции
+# Migrations
 ```
 dotnet ef migrations add Init --startup-project ./DeliveryApp.Api --project ./DeliveryApp.Infrastructure --output-dir ./Adapters/Postgres/Migrations
 dotnet ef database update --startup-project ./DeliveryApp.Api --connection "Server=localhost;Port=5432;User Id=username;Password=secret;Database=delivery;"
 ```
 
-# Запросы к БД
+# Database Queries
 ```
--- Выборки
+-- Selects
 SELECT * FROM public.couriers;
 SELECT * FROM public.courier_statuses;
 SELECT * FROM public.transports;
@@ -31,12 +32,12 @@ LEFT JOIN public.order_statuses as s on o.status_id=s.id;
 SELECT * FROM public.order_statuses;
 SELECT * FROM public.outbox;
 
--- Очистка БД (все кроме справочников)
+-- Clear Database (everything except reference tables)
 DELETE FROM public.couriers;
 DELETE FROM public.orders;
 DELETE FROM public.outbox;
 
--- Добавить курьеров
+-- Add couriers
 INSERT INTO public.couriers(
     id, name, transport_id, location_x, location_y, status_id)
     VALUES ('bf79a004-56d7-4e5f-a21c-0a9e5e08d10d', 'Пеший 1', 1, 1, 3, 2);
