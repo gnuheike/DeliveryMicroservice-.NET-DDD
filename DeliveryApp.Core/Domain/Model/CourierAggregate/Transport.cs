@@ -4,6 +4,10 @@ using Primitives;
 
 namespace DeliveryApp.Core.Domain.Model.CourierAggregate;
 
+/**
+ * This class represents a type of transport, such as a car, bicycle, or pedestrian.
+ * Transport is used to move a courier from one location to another in the learning app.
+ */
 public class Transport : Entity<int>
 {
     public static Transport Pedestrian = new(1, nameof(Pedestrian).ToLowerInvariant(), 1);
@@ -33,6 +37,11 @@ public class Transport : Entity<int>
     }
 
     public string Name { get; }
+
+    /**
+     * Default speed in cells per tick.
+     * For example, a car can move 3 cells per tick.
+     */
     public int Speed { get; }
 
     public static Result<Transport, Error> GetById(int id)
@@ -45,6 +54,8 @@ public class Transport : Entity<int>
 
     public static Result<Transport, Error> GetByName(string name)
     {
+        if (string.IsNullOrWhiteSpace(name)) return Result.Failure<Transport, Error>(Errors.TransportNotFound(name));
+
         var lowerName = name.ToLowerInvariant();
         var transport = All.FirstOrDefault(t => t.Name == lowerName);
         return transport == null

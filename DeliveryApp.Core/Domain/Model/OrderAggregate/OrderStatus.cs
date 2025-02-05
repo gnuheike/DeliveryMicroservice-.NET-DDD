@@ -15,7 +15,7 @@ public class OrderStatus : ValueObject
     }
 
 
-    private OrderStatus(string name) : this()
+    private OrderStatus(string name)
     {
         Name = name;
     }
