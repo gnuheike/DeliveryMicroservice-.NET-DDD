@@ -1,4 +1,7 @@
-﻿# OpenApi
+[![.NET](https://github.com/gnuheike/delivery/actions/workflows/dotnet.yml/badge.svg)](https://github.com/gnuheike/delivery/actions/workflows/dotnet.yml)
+ 
+ 
+ # OpenApi
 Run from the folder DeliveryApp.Api/Adapters/Http/Contract
 
 ```
