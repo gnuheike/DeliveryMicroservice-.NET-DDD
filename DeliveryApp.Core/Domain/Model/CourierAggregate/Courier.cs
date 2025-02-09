@@ -75,9 +75,9 @@ public class Courier : Aggregate<Guid>
         while (availableSteps > 0)
         {
             var locationAfterMove = currentLocation.MoveTo(location);
-            if (locationAfterMove == currentLocation) break;
+            if (locationAfterMove.Value == currentLocation) break;
 
-            currentLocation = locationAfterMove;
+            currentLocation = locationAfterMove.Value;
             availableSteps--;
         }
 

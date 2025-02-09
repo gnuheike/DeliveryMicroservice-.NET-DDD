@@ -34,7 +34,7 @@ public class Order : Aggregate<Guid>
         if (courier == null) return Errors.CourierIsRequired();
         if (Status == OrderStatus.Completed) return Errors.CantAssignCompletedOrder();
         if (Status == OrderStatus.Assigned) return Errors.OrderAlreadyAssigned();
-        if (courier.Status.Equals(CourierStatus.Busy)) return Errors.CantAssignOrderToBusyCourier(courier.Id);
+        if (courier.Status == CourierStatus.Busy) return Errors.CantAssignOrderToBusyCourier(courier.Id);
 
 
         CourierId = courier.Id;

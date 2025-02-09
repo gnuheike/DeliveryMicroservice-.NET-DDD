@@ -94,7 +94,7 @@ public class LocationShould
         var location = Location.Create(5, 5).Value;
         var targetLocation = Location.Create(5, 5).Value;
 
-        var result = location.MoveTo(targetLocation);
+        var result = location.MoveTo(targetLocation).Value;
 
         result.Should().BeSameAs(location);
     }
@@ -106,7 +106,7 @@ public class LocationShould
         var targetLocation = Location.Create(5, 5).Value;
         var expectedLocation = Location.Create(4, 5).Value;
 
-        var result = location.MoveTo(targetLocation);
+        var result = location.MoveTo(targetLocation).Value;
 
         result.Should().BeEquivalentTo(expectedLocation);
     }
@@ -118,7 +118,7 @@ public class LocationShould
         var targetLocation = Location.Create(5, 5).Value;
         var expectedLocation = Location.Create(5, 4).Value;
 
-        var result = location.MoveTo(targetLocation);
+        var result = location.MoveTo(targetLocation).Value;
 
         result.Should().BeEquivalentTo(expectedLocation);
     }
@@ -130,7 +130,7 @@ public class LocationShould
         var targetLocation = Location.Create(5, 5).Value;
         var expectedLocation = Location.Create(4, 5).Value;
 
-        var result = location.MoveTo(targetLocation);
+        var result = location.MoveTo(targetLocation).Value;
 
         result.Should().BeEquivalentTo(expectedLocation);
     }

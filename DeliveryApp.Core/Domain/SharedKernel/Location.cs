@@ -53,21 +53,24 @@ public class Location : ValueObject
 
     public int GetDistanceTo(Location location)
     {
+        if (location == null) return 0;
+        if (Equals(location)) return 0;
+
         return Math.Abs(X - location.X) + Math.Abs(Y - location.Y);
     }
 
-    public Location MoveTo(Location targetLocation)
+    public Result<Location, Error> MoveTo(Location targetLocation)
     {
         if (Equals(targetLocation)) return this;
 
         var distanceX = targetLocation.X - X;
         var distanceY = targetLocation.Y - Y;
 
-        if (Math.Abs(distanceX) >= Math.Abs(distanceY)) return Create(X + Math.Sign(distanceX), Y).Value;
+        if (Math.Abs(distanceX) >= Math.Abs(distanceY)) return Create(X + Math.Sign(distanceX), Y);
+        if (distanceY != 0) return Create(X, Y + Math.Sign(distanceY));
 
-        if (distanceY != 0) return Create(X, Y + Math.Sign(distanceY)).Value;
 
-        return Create(X + Math.Sign(distanceX), Y).Value;
+        return Create(X + Math.Sign(distanceX), Y);
     }
 
     protected override IEnumerable<object> GetEqualityComponents()
