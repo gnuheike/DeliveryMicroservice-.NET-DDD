@@ -94,4 +94,36 @@ public class LocationShould
         newLocation1.Should().NotBeSameAs(location);
         newLocation2.Should().NotBeSameAs(location);
     }
+
+    [Fact]
+    public void ReturnSameInstanceWhenMovingToSameLocation()
+    {
+        var location = new Location(5, 5);
+        var result = location.MoveTo(new Location(5, 5));
+        result.Should().BeSameAs(location);
+    }
+
+    [Fact]
+    public void MoveHorizontallyWhenHorizontalDistanceIsGreater()
+    {
+        var location = new Location(3, 5);
+        var result = location.MoveTo(new Location(5, 5));
+        result.Should().BeEquivalentTo(new Location(4, 5));
+    }
+
+    [Fact]
+    public void MoveVerticallyWhenVerticalDistanceIsGreater()
+    {
+        var location = new Location(5, 3);
+        var result = location.MoveTo(new Location(5, 5));
+        result.Should().BeEquivalentTo(new Location(5, 4));
+    }
+
+    [Fact]
+    public void PrioritizeHorizontalMoveWhenDistancesAreEqual()
+    {
+        var location = new Location(3, 3);
+        var result = location.MoveTo(new Location(5, 5));
+        result.Should().BeEquivalentTo(new Location(4, 3));
+    }
 }
