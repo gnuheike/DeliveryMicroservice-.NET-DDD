@@ -9,7 +9,7 @@ public class CourierShould
     [Fact]
     public void SetStatusToBusy_WhenFree()
     {
-        var courier = new Courier("John Doe", Transport.Bicycle, new Location(1, 1));
+        var courier = Courier.Create("John Doe", Transport.Bicycle, new Location(1, 1)).Value;
 
         var result = courier.SetBusy();
 
@@ -20,7 +20,7 @@ public class CourierShould
     [Fact]
     public void ReturnError_WhenSettingBusy_AndNotFree()
     {
-        var courier = new Courier("John Doe", Transport.Bicycle, new Location(1, 1));
+        var courier = Courier.Create("John Doe", Transport.Bicycle, new Location(1, 1)).Value;
         courier.SetBusy();
 
         var result = courier.SetBusy();
@@ -32,7 +32,7 @@ public class CourierShould
     [Fact]
     public void SetStatusToFree_WhenBusy()
     {
-        var courier = new Courier("John Doe", Transport.Bicycle, new Location(1, 1));
+        var courier = Courier.Create("John Doe", Transport.Bicycle, new Location(1, 1)).Value;
         courier.SetBusy();
 
         var result = courier.SetFree();
@@ -44,7 +44,7 @@ public class CourierShould
     [Fact]
     public void ReturnError_WhenSettingFree_AndNotBusy()
     {
-        var courier = new Courier("John Doe", Transport.Bicycle, new Location(1, 1));
+        var courier = Courier.Create("John Doe", Transport.Bicycle, new Location(1, 1)).Value;
 
         var result = courier.SetFree();
 
@@ -55,7 +55,7 @@ public class CourierShould
     [Fact]
     public void CalculateCorrectStepsToTargetLocation()
     {
-        var courier = new Courier("John Doe", Transport.Bicycle, new Location(1, 1));
+        var courier = Courier.Create("John Doe", Transport.Bicycle, new Location(1, 1)).Value;
         var targetLocation = new Location(5, 5);
 
         var steps = courier.GetDistanceTo(targetLocation);
@@ -66,7 +66,7 @@ public class CourierShould
     [Fact]
     public void UpdateLocation_WhenMovedToTarget()
     {
-        var courier = new Courier("John Doe", Transport.Bicycle, new Location(1, 1));
+        var courier = Courier.Create("John Doe", Transport.Bicycle, new Location(1, 1)).Value;
         var targetLocation = new Location(5, 5);
 
         courier.MoveTo(targetLocation);
@@ -77,7 +77,7 @@ public class CourierShould
     [Fact]
     public void MoveCorrectly_WhenTargetIsWithinStepRange()
     {
-        var courier = new Courier("John Doe", Transport.Car, new Location(1, 1));
+        var courier = Courier.Create("John Doe", Transport.Car, new Location(1, 1)).Value;
         var targetLocation = new Location(2, 1);
 
         courier.MoveTo(targetLocation);
@@ -88,7 +88,7 @@ public class CourierShould
     [Fact]
     public void MoveCorrectly_4Steps()
     {
-        var courier = new Courier("John Doe", Transport.Bicycle, new Location(1, 1));
+        var courier = Courier.Create("John Doe", Transport.Bicycle, new Location(1, 1)).Value;
         var targetLocation = new Location(5, 5);
 
         courier.MoveTo(targetLocation);
@@ -102,7 +102,7 @@ public class CourierShould
     [Fact]
     public void MoveCorrectly_4StepsBackwards()
     {
-        var courier = new Courier("John Doe", Transport.Bicycle, new Location(10, 10));
+        var courier = Courier.Create("John Doe", Transport.Bicycle, new Location(10, 10)).Value;
         var targetLocation = new Location(6, 6);
 
         courier.MoveTo(targetLocation);

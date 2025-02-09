@@ -50,7 +50,7 @@ public class Location(int width, int height) : ValueObject
 
     public Location MoveTo(Location targetLocation)
     {
-        if (this == targetLocation) return this;
+        if (Equals(targetLocation)) return this;
 
         var distanceX = targetLocation.Width - Width;
         var distanceY = targetLocation.Height - Height;

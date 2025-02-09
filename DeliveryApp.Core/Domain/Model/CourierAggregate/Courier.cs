@@ -6,23 +6,34 @@ namespace DeliveryApp.Core.Domain.Model.CourierAggregate;
 
 public class Courier : Aggregate<Guid>
 {
-    private Courier()
+    private Courier(Guid id, string name, Transport transport, Location location, CourierStatus status)
     {
-    }
-
-    public Courier(string name, Transport transport, Location location)
-    {
-        Id = Guid.NewGuid();
+        Id = id;
         Name = name;
         Transport = transport;
         Location = location;
-        Status = CourierStatus.Free;
+        Status = status;
     }
 
     public string Name { get; }
     public Transport Transport { get; }
     public Location Location { get; private set; }
     public CourierStatus Status { get; private set; }
+
+    public static Result<Courier, Error> Create(string name, Transport transport, Location location)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return GeneralErrors.ValueIsRequired(nameof(name));
+        if (transport == null) return GeneralErrors.ValueIsRequired(nameof(transport));
+        if (location == null) return GeneralErrors.ValueIsRequired(nameof(location));
+
+        return new Courier(
+            Guid.NewGuid(),
+            name,
+            transport,
+            location,
+            CourierStatus.Free
+        );
+    }
 
     public UnitResult<Error> SetBusy()
     {
@@ -55,6 +66,7 @@ public class Courier : Aggregate<Guid>
     public void MoveTo(Location location)
     {
         var currentLocation = Location;
+        // In this test project, the steps is the same as the speed
         var availableSteps = Transport.Speed;
 
         while (availableSteps > 0)

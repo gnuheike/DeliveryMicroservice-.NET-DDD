@@ -11,7 +11,7 @@ public class Order : Aggregate<Guid>
     {
     }
 
-    private Order(Guid orderId, Location location) : this()
+    private Order(Guid orderId, Location location)
     {
         Id = orderId;
         Location = location;
@@ -33,6 +33,7 @@ public class Order : Aggregate<Guid>
     {
         if (courier == null) return GeneralErrors.ValueIsRequired(nameof(courier));
         if (Status != OrderStatus.Created) return Errors.OrderAlreadyAssigned();
+        if (courier.Status.Equals(CourierStatus.Busy)) return Errors.CantAssignOrderToBusyCourier(courier.Id);
 
         CourierId = courier.Id;
         Status = OrderStatus.Assigned;
@@ -60,8 +61,8 @@ public class Order : Aggregate<Guid>
         public static Error CantCompletedNotAssignedOrder()
         {
             return new Error(
-                $"{nameof(Order).ToLowerInvariant()}.cant.completed.not.assigned.order",
-                "Cant completed not assigned order"
+                $"{nameof(Order).ToLowerInvariant()}.cannot.complete.unassigned.order",
+                "Cannot complete an unassigned order"
             );
         }
 
