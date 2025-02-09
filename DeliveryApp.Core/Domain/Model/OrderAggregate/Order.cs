@@ -32,6 +32,7 @@ public class Order : Aggregate<Guid>
     public UnitResult<Error> Assign(Courier courier)
     {
         if (courier == null) return GeneralErrors.ValueIsRequired(nameof(courier));
+        if (Status != OrderStatus.Created) return Errors.OrderAlreadyAssigned();
 
         CourierId = courier.Id;
         Status = OrderStatus.Assigned;
@@ -48,16 +49,28 @@ public class Order : Aggregate<Guid>
 
     public static class Errors
     {
+        public static Error OrderAlreadyAssigned()
+        {
+            return new Error(
+                $"{nameof(Order).ToLowerInvariant()}.already.assigned",
+                "Order already assigned"
+            );
+        }
+
         public static Error CantCompletedNotAssignedOrder()
         {
-            return new Error($"{nameof(Order).ToLowerInvariant()}.cant.completed.not.assigned.order",
-                "Нельзя завершить заказ, который не был назначен");
+            return new Error(
+                $"{nameof(Order).ToLowerInvariant()}.cant.completed.not.assigned.order",
+                "Cant completed not assigned order"
+            );
         }
 
         public static Error CantAssignOrderToBusyCourier(Guid courierId)
         {
-            return new Error($"{nameof(Order).ToLowerInvariant()}.cant.assign.order.to.busy.courier",
-                $"Нельзя назначить заказ на курьера, который занят. Id курьера = {courierId}");
+            return new Error(
+                $"{nameof(Order).ToLowerInvariant()}.cant.assign.order.to.busy.courier",
+                $"Cant assign order to busy courier with id {courierId}"
+            );
         }
     }
 }

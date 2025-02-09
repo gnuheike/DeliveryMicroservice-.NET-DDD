@@ -45,15 +45,22 @@ public class Courier : Aggregate<Guid>
         return Location.GetDistanceTo(location) / Transport.Speed;
     }
 
+    /**
+     * Moves the courier towards the target location.
+     * The courier moves in the direction of the target location, one step at a time.
+     * If the target location is not reachable in one step, the courier moves as far as possible towards it.
+     * The courier moves horizontally or vertically, not diagonally.
+     * The courier can move up to N cells per step, where N is the speed of the transport.
+     */
     public void MoveTo(Location location)
     {
         var currentLocation = Location;
-        var remainingSteps = Transport.Speed;
+        var availableSteps = Transport.Speed;
 
-        while (remainingSteps > 0)
+        while (availableSteps > 0)
         {
             var locationAfterMove = currentLocation.MoveTo(location);
-            Console.WriteLine($"width: ${locationAfterMove.Width}, height: ${locationAfterMove.Height}");
+
             if (locationAfterMove == currentLocation)
             {
                 currentLocation = locationAfterMove;
@@ -61,7 +68,7 @@ public class Courier : Aggregate<Guid>
             }
 
             currentLocation = locationAfterMove;
-            remainingSteps--;
+            availableSteps--;
         }
 
         Location = currentLocation;
@@ -77,7 +84,7 @@ public class Courier : Aggregate<Guid>
             );
         }
 
-        public static UnitResult<Error> CourierIsNotBusy()
+        public static Error CourierIsNotBusy()
         {
             return new Error(
                 $"{nameof(Courier).ToLowerInvariant()}.is.not.busy",
