@@ -31,9 +31,11 @@ public class Order : Aggregate<Guid>
 
     public UnitResult<Error> Assign(Courier courier)
     {
-        if (courier == null) return GeneralErrors.ValueIsRequired(nameof(courier));
-        if (Status != OrderStatus.Created) return Errors.OrderAlreadyAssigned();
+        if (courier == null) return Errors.CourierIsRequired();
+        if (Status == OrderStatus.Completed) return Errors.CantAssignCompletedOrder();
+        if (Status == OrderStatus.Assigned) return Errors.OrderAlreadyAssigned();
         if (courier.Status.Equals(CourierStatus.Busy)) return Errors.CantAssignOrderToBusyCourier(courier.Id);
+
 
         CourierId = courier.Id;
         Status = OrderStatus.Assigned;
@@ -58,6 +60,14 @@ public class Order : Aggregate<Guid>
             );
         }
 
+        public static Error CantAssignCompletedOrder()
+        {
+            return new Error(
+                $"{nameof(Order).ToLowerInvariant()}.cannot.assign.completed.order",
+                "Cannot assign a completed order"
+            );
+        }
+
         public static Error CantCompletedNotAssignedOrder()
         {
             return new Error(
@@ -70,7 +80,15 @@ public class Order : Aggregate<Guid>
         {
             return new Error(
                 $"{nameof(Order).ToLowerInvariant()}.cant.assign.order.to.busy.courier",
-                $"Cant assign order to busy courier with id {courierId}"
+                $"Cannot assign order to busy courier with id {courierId}"
+            );
+        }
+
+        public static Error CourierIsRequired()
+        {
+            return new Error(
+                $"{nameof(Order).ToLowerInvariant()}.courier.is.required",
+                "Courier is required"
             );
         }
     }

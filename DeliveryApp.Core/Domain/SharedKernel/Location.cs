@@ -43,12 +43,12 @@ public class Location : ValueObject
 
     public Result<Location, Error> SetX(int newWidth)
     {
-        return Create(newWidth, Y).Value;
+        return Create(newWidth, Y);
     }
 
     public Result<Location, Error> SetY(int newHeight)
     {
-        return Create(X, newHeight).Value;
+        return Create(X, newHeight);
     }
 
     public int GetDistanceTo(Location location)
@@ -56,7 +56,7 @@ public class Location : ValueObject
         return Math.Abs(X - location.X) + Math.Abs(Y - location.Y);
     }
 
-    public Result<Location, Error> MoveTo(Location targetLocation)
+    public Location MoveTo(Location targetLocation)
     {
         if (Equals(targetLocation)) return this;
 

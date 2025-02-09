@@ -66,6 +66,8 @@ public class Courier : Aggregate<Guid>
      */
     public void MoveTo(Location location)
     {
+        ArgumentNullException.ThrowIfNull(location);
+
         var currentLocation = Location;
         // In this test project, the steps is the same as the speed
         var availableSteps = Transport.Speed;
@@ -73,9 +75,9 @@ public class Courier : Aggregate<Guid>
         while (availableSteps > 0)
         {
             var locationAfterMove = currentLocation.MoveTo(location);
-            if (locationAfterMove.Value == currentLocation) break;
+            if (locationAfterMove == currentLocation) break;
 
-            currentLocation = locationAfterMove.Value;
+            currentLocation = locationAfterMove;
             availableSteps--;
         }
 
