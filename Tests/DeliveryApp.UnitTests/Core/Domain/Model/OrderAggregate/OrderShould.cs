@@ -12,8 +12,13 @@ public class OrderShould
 {
     public static IEnumerable<object[]> GetIncorrectOrderParams()
     {
-        yield return [Guid.Empty, new Location(1, 1)];
+        yield return [Guid.Empty, Location.Create(1, 1).Value];
         yield return [Guid.NewGuid(), null];
+    }
+
+    private static Location CreateLocation(int x, int y)
+    {
+        return Location.Create(x, y).Value;
     }
 
     [Fact]
@@ -21,7 +26,7 @@ public class OrderShould
     {
         //Arrange
         var orderId = Guid.NewGuid();
-        var location = new Location(5, 5);
+        var location = CreateLocation(5, 5);
 
         //Act
         var result = Order.Create(orderId, location);
@@ -49,8 +54,8 @@ public class OrderShould
     public void CanAssignToCourier()
     {
         //Arrange
-        var order = Order.Create(Guid.NewGuid(), new Location(5, 5)).Value;
-        var courier = Courier.Create("Ваня", Transport.Pedestrian, new Location(1, 1)).Value;
+        var order = Order.Create(Guid.NewGuid(), CreateLocation(5, 5)).Value;
+        var courier = Courier.Create("Ваня", Transport.Pedestrian, CreateLocation(1, 1)).Value;
 
         //Act
         var result = order.Assign(courier);
@@ -65,8 +70,8 @@ public class OrderShould
     public void CanComplete()
     {
         //Arrange
-        var order = Order.Create(Guid.NewGuid(), new Location(5, 5)).Value;
-        var courier = Courier.Create("Ваня", Transport.Pedestrian, new Location(1, 1)).Value;
+        var order = Order.Create(Guid.NewGuid(), CreateLocation(5, 5)).Value;
+        var courier = Courier.Create("Ваня", Transport.Pedestrian, CreateLocation(1, 1)).Value;
         order.Assign(courier);
 
         //Act

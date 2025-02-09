@@ -6,10 +6,15 @@ namespace DeliveryApp.UnitTests.Core.Domain.Model.CourierAggregate;
 
 public class CourierShould
 {
+    private static Location CreateLocation()
+    {
+        return Location.MinimalLocation;
+    }
+
     [Fact]
     public void SetStatusToBusy_WhenFree()
     {
-        var courier = Courier.Create("John Doe", Transport.Bicycle, new Location(1, 1)).Value;
+        var courier = Courier.Create("John Doe", Transport.Bicycle, CreateLocation()).Value;
 
         var result = courier.SetBusy();
 
@@ -20,7 +25,7 @@ public class CourierShould
     [Fact]
     public void ReturnError_WhenSettingBusy_AndNotFree()
     {
-        var courier = Courier.Create("John Doe", Transport.Bicycle, new Location(1, 1)).Value;
+        var courier = Courier.Create("John Doe", Transport.Bicycle, CreateLocation()).Value;
         courier.SetBusy();
 
         var result = courier.SetBusy();
@@ -32,7 +37,7 @@ public class CourierShould
     [Fact]
     public void SetStatusToFree_WhenBusy()
     {
-        var courier = Courier.Create("John Doe", Transport.Bicycle, new Location(1, 1)).Value;
+        var courier = Courier.Create("John Doe", Transport.Bicycle, CreateLocation()).Value;
         courier.SetBusy();
 
         var result = courier.SetFree();
@@ -44,7 +49,7 @@ public class CourierShould
     [Fact]
     public void ReturnError_WhenSettingFree_AndNotBusy()
     {
-        var courier = Courier.Create("John Doe", Transport.Bicycle, new Location(1, 1)).Value;
+        var courier = Courier.Create("John Doe", Transport.Bicycle, CreateLocation()).Value;
 
         var result = courier.SetFree();
 
@@ -55,8 +60,8 @@ public class CourierShould
     [Fact]
     public void CalculateCorrectStepsToTargetLocation()
     {
-        var courier = Courier.Create("John Doe", Transport.Bicycle, new Location(1, 1)).Value;
-        var targetLocation = new Location(5, 5);
+        var courier = Courier.Create("John Doe", Transport.Bicycle, CreateLocation()).Value;
+        var targetLocation = Location.Create(5, 5).Value;
 
         var steps = courier.GetDistanceTo(targetLocation);
 
@@ -66,19 +71,19 @@ public class CourierShould
     [Fact]
     public void UpdateLocation_WhenMovedToTarget()
     {
-        var courier = Courier.Create("John Doe", Transport.Bicycle, new Location(1, 1)).Value;
-        var targetLocation = new Location(5, 5);
+        var courier = Courier.Create("John Doe", Transport.Bicycle, CreateLocation()).Value;
+        var targetLocation = Location.Create(5, 5).Value;
 
         courier.MoveTo(targetLocation);
 
-        Assert.Equal(new Location(2, 2), courier.Location);
+        Assert.Equal(Location.Create(2, 2), courier.Location);
     }
 
     [Fact]
     public void MoveCorrectly_WhenTargetIsWithinStepRange()
     {
-        var courier = Courier.Create("John Doe", Transport.Car, new Location(1, 1)).Value;
-        var targetLocation = new Location(2, 1);
+        var courier = Courier.Create("John Doe", Transport.Car, CreateLocation()).Value;
+        var targetLocation = Location.Create(2, 1).Value;
 
         courier.MoveTo(targetLocation);
 
@@ -88,8 +93,8 @@ public class CourierShould
     [Fact]
     public void MoveCorrectly_4Steps()
     {
-        var courier = Courier.Create("John Doe", Transport.Bicycle, new Location(1, 1)).Value;
-        var targetLocation = new Location(5, 5);
+        var courier = Courier.Create("John Doe", Transport.Bicycle, CreateLocation()).Value;
+        var targetLocation = Location.Create(5, 5).Value;
 
         courier.MoveTo(targetLocation);
         courier.MoveTo(targetLocation);
@@ -102,8 +107,8 @@ public class CourierShould
     [Fact]
     public void MoveCorrectly_4StepsBackwards()
     {
-        var courier = Courier.Create("John Doe", Transport.Bicycle, new Location(10, 10)).Value;
-        var targetLocation = new Location(6, 6);
+        var courier = Courier.Create("John Doe", Transport.Bicycle, Location.MaximumLocation).Value;
+        var targetLocation = Location.Create(6, 6).Value;
 
         courier.MoveTo(targetLocation);
         courier.MoveTo(targetLocation);

@@ -53,6 +53,7 @@ public class Courier : Aggregate<Guid>
 
     public int GetDistanceTo(Location location)
     {
+        // In this test project, the steps is the same as the speed
         return Location.GetDistanceTo(location) / Transport.Speed;
     }
 
@@ -72,9 +73,9 @@ public class Courier : Aggregate<Guid>
         while (availableSteps > 0)
         {
             var locationAfterMove = currentLocation.MoveTo(location);
-            if (locationAfterMove == currentLocation) break;
+            if (locationAfterMove.Value == currentLocation) break;
 
-            currentLocation = locationAfterMove;
+            currentLocation = locationAfterMove.Value;
             availableSteps--;
         }
 
