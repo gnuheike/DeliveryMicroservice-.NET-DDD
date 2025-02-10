@@ -1,4 +1,3 @@
-using System;
 using DeliveryApp.Core.Domain.SharedKernel;
 using FluentAssertions;
 using Xunit;
@@ -10,88 +9,129 @@ public class LocationShould
     [Fact]
     public void CreateWithValidValues()
     {
-        var location = new Location(5, 5);
-        location.Width.Should().Be(5);
-        location.Height.Should().Be(5);
+        var location = Location.Create(5, 5).Value;
+        location.X.Should().Be(5);
+        location.Y.Should().Be(5);
     }
 
-    [Fact]
-    public void ThrowExceptionForInvalidWidth()
+    [Theory]
+    [InlineData(0, 5)]
+    [InlineData(11, 5)]
+    [InlineData(5, 0)]
+    [InlineData(5, 11)]
+    public void NotCreateWithInvalidValues(int x, int y)
     {
-        Action act1 = () => new Location(0, 5);
-        Action act2 = () => new Location(11, 5);
-        act1.Should().Throw<ArgumentException>();
-        act2.Should().Throw<ArgumentException>();
+        var result = Location.Create(x, y);
+        result.IsFailure.Should().BeTrue();
     }
 
-    [Fact]
-    public void ThrowExceptionForInvalidHeight()
-    {
-        Action act1 = () => new Location(5, 0);
-        Action act2 = () => new Location(5, 11);
-        act1.Should().Throw<ArgumentException>();
-        act2.Should().Throw<ArgumentException>();
-    }
 
     [Fact]
     public void CreateRandomLocationWithinValidRange()
     {
         var location = Location.CreateRandom();
-        location.Width.Should().BeInRange(1, 10);
-        location.Height.Should().BeInRange(1, 10);
+        location.X.Should().BeInRange(1, 10);
+        location.Y.Should().BeInRange(1, 10);
     }
 
     [Fact]
-    public void ReturnNewLocationWithUpdatedWidth()
+    public void ReturnNewLocationWithUpdatedX()
     {
-        var location = new Location(5, 5);
-        var newLocation = location.SetWidth(7);
-        newLocation.Width.Should().Be(7);
-        newLocation.Height.Should().Be(5);
+        var location = Location.Create(5, 5).Value;
+        var newLocation = location.SetX(7).Value;
+        newLocation.X.Should().Be(7);
+        newLocation.Y.Should().Be(5);
     }
 
     [Fact]
-    public void ReturnNewLocationWithUpdatedHeight()
+    public void ReturnNewLocationWithUpdatedY()
     {
-        var location = new Location(5, 5);
-        var newLocation = location.SetHeight(7);
-        newLocation.Width.Should().Be(5);
-        newLocation.Height.Should().Be(7);
+        var location = Location.Create(5, 5).Value;
+        var newLocation = location.SetY(7).Value;
+        newLocation.X.Should().Be(5);
+        newLocation.Y.Should().Be(7);
     }
 
     [Fact]
     public void CalculateCorrectDistanceToAnotherLocation()
     {
-        var location1 = new Location(2, 3);
-        var location2 = new Location(5, 6);
+        var location1 = Location.Create(2, 3).Value;
+        var location2 = Location.Create(5, 6).Value;
         location1.GetDistanceTo(location2).Should().Be(6);
     }
 
     [Fact]
     public void BeEqualWhenCoordinatesAreSame()
     {
-        var location1 = new Location(5, 5);
-        var location2 = new Location(5, 5);
+        var location1 = Location.Create(5, 5).Value;
+        var location2 = Location.Create(5, 5).Value;
         location1.Should().Be(location2);
     }
 
     [Fact]
     public void NotBeEqualWhenCoordinatesDiffer()
     {
-        var location1 = new Location(5, 5);
-        var location2 = new Location(6, 5);
+        var location1 = Location.Create(5, 5).Value;
+        var location2 = Location.Create(6, 5).Value;
         location1.Should().NotBe(location2);
     }
 
     [Fact]
     public void ShouldBeImmutable()
     {
-        var location = new Location(5, 5);
+        var location = Location.Create(5, 5).Value;
 
-        var newLocation1 = location.SetWidth(7);
-        var newLocation2 = location.SetHeight(7);
+        var newLocation1 = location.SetX(7);
+        var newLocation2 = location.SetY(7);
 
         newLocation1.Should().NotBeSameAs(location);
         newLocation2.Should().NotBeSameAs(location);
+    }
+
+    [Fact]
+    public void ReturnSameInstanceWhenMovingToSameLocation()
+    {
+        var location = Location.Create(5, 5).Value;
+        var targetLocation = Location.Create(5, 5).Value;
+
+        var result = location.MoveTo(targetLocation).Value;
+
+        result.Should().BeSameAs(location);
+    }
+
+    [Fact]
+    public void MoveHorizontallyWhenHorizontalDistanceIsGreater()
+    {
+        var location = Location.Create(3, 5).Value;
+        var targetLocation = Location.Create(5, 5).Value;
+        var expectedLocation = Location.Create(4, 5).Value;
+
+        var result = location.MoveTo(targetLocation).Value;
+
+        result.Should().BeEquivalentTo(expectedLocation);
+    }
+
+    [Fact]
+    public void MoveVerticallyWhenVerticalDistanceIsGreater()
+    {
+        var location = Location.Create(5, 3).Value;
+        var targetLocation = Location.Create(5, 5).Value;
+        var expectedLocation = Location.Create(5, 4).Value;
+
+        var result = location.MoveTo(targetLocation).Value;
+
+        result.Should().BeEquivalentTo(expectedLocation);
+    }
+
+    [Fact]
+    public void PrioritizeHorizontalMoveWhenDistancesAreEqual()
+    {
+        var location = Location.Create(3, 5).Value;
+        var targetLocation = Location.Create(5, 5).Value;
+        var expectedLocation = Location.Create(4, 5).Value;
+
+        var result = location.MoveTo(targetLocation).Value;
+
+        result.Should().BeEquivalentTo(expectedLocation);
     }
 }
