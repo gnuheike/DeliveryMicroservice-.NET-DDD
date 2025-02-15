@@ -1,4 +1,4 @@
-using DeliveryApp.Core.Domain.Model.OrderAggregate;
+using DeliveryApp.Core.Domain.Models.OrderAggregate.VO;
 using FluentAssertions;
 using Xunit;
 

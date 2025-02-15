@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 using DeliveryApp.Core.Domain.SharedKernel;
 using Primitives;
 
-namespace DeliveryApp.Core.Domain.Model.CourierAggregate;
+namespace DeliveryApp.Core.Domain.Models.CourierAggregate;
 
 public class Courier : Aggregate<Guid>
 {
@@ -13,6 +13,10 @@ public class Courier : Aggregate<Guid>
         Transport = transport;
         Location = location;
         Status = status;
+    }
+
+    private Courier()
+    {
     }
 
     public string Name { get; }

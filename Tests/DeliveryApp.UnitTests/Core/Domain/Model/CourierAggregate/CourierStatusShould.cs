@@ -1,4 +1,4 @@
-using DeliveryApp.Core.Domain.Model.CourierAggregate;
+using DeliveryApp.Core.Domain.Models.CourierAggregate;
 using FluentAssertions;
 using Xunit;
 

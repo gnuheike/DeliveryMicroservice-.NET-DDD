@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using CSharpFunctionalExtensions;
 
-namespace DeliveryApp.Core.Domain.Model.OrderAggregate;
+namespace DeliveryApp.Core.Domain.Models.OrderAggregate.VO;
 
 public class OrderStatus : ValueObject
 {

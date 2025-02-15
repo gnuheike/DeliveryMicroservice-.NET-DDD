@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using CSharpFunctionalExtensions;
 
-namespace DeliveryApp.Core.Domain.Model.CourierAggregate;
+namespace DeliveryApp.Core.Domain.Models.CourierAggregate;
 
 public class CourierStatus : ValueObject
 {

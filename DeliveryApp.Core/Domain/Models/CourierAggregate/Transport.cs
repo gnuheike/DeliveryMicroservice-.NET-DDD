@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using CSharpFunctionalExtensions;
 using Primitives;
 
-namespace DeliveryApp.Core.Domain.Model.CourierAggregate;
+namespace DeliveryApp.Core.Domain.Models.CourierAggregate;
 
 /**
  * This class represents a type of transport, such as a car, bicycle, or pedestrian.
@@ -66,6 +66,13 @@ public class Transport : Entity<int>
     public override string ToString()
     {
         return $"{Name} ({Speed})";
+    }
+
+    public static IEnumerable<Transport> List()
+    {
+        yield return Pedestrian;
+        yield return Bicycle;
+        yield return Car;
     }
 
     private static class Errors
