@@ -2,7 +2,7 @@ using Primitives;
 
 namespace DeliveryApp.Infrastructure.Adapters.Postgres;
 
-public class UnitOfWork(ApplicationDbContext dbContext) : IUnitOfWork, IDisposable
+public sealed class UnitOfWork(ApplicationDbContext dbContext) : IUnitOfWork, IDisposable
 {
     private readonly ApplicationDbContext _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
@@ -11,16 +11,15 @@ public class UnitOfWork(ApplicationDbContext dbContext) : IUnitOfWork, IDisposab
     public void Dispose()
     {
         Dispose(true);
-        GC.SuppressFinalize(this);
     }
 
     public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        await _dbContext.SaveChangesAsync(cancellationToken);
-        return true;
+        var affectedRecords = await _dbContext.SaveChangesAsync(cancellationToken);
+        return affectedRecords > 0;
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (_disposed) return;
 

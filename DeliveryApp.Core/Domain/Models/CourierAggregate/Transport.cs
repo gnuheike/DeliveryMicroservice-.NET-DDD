@@ -70,9 +70,7 @@ public class Transport : Entity<int>
 
     public static IEnumerable<Transport> List()
     {
-        yield return Pedestrian;
-        yield return Bicycle;
-        yield return Car;
+        return All;
     }
 
     private static class Errors

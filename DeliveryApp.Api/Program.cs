@@ -30,6 +30,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     {
         options.UseNpgsql(connectionString,
             sqlOptions => { sqlOptions.MigrationsAssembly("DeliveryApp.Infrastructure"); });
+
+        // Since it's a study application, we can enable sensitive data logging.
         options.EnableSensitiveDataLogging();
     }
 );

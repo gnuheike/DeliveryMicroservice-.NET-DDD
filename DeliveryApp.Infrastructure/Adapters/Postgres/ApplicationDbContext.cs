@@ -20,7 +20,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         modelBuilder.Entity<Transport>(b =>
         {
-            var allTransports = Transport.List().ToList();
+            var allTransports = Transport.List()?.ToList() ??
+                                throw new InvalidOperationException("Transport list cannot be null during seeding");
+            if (allTransports.Count == 0)
+                throw new InvalidOperationException("Transport list cannot be empty during seeding");
+
             b.HasData(allTransports.Select(c => new { c.Id, c.Name, c.Speed }));
         });
     }

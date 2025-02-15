@@ -8,12 +8,20 @@ public class PostgresCourierRepository(ApplicationDbContext dbContext) : ICourie
 {
     private readonly ApplicationDbContext _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
+    /// <remarks>
+    ///     The changes are saved in the UnitOfWork.
+    /// </remarks>
+    /// <seealso cref="UnitOfWork" />
     public async Task AddAsync(Courier courier)
     {
         if (courier.Transport != null) _dbContext.Attach(courier.Transport);
         await _dbContext.Couriers.AddAsync(courier);
     }
 
+    /// <remarks>
+    ///     The changes are saved in the UnitOfWork.
+    /// </remarks>
+    /// <seealso cref="UnitOfWork" />
     public Task UpdateAsync(Courier courier)
     {
         if (courier.Transport != null) _dbContext.Attach(courier.Transport);

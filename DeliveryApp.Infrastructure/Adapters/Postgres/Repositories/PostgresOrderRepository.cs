@@ -9,12 +9,19 @@ public class PostgresOrderRepository(ApplicationDbContext dbContext) : IOrderRep
 {
     private readonly ApplicationDbContext _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
-
+    /// <remarks>
+    ///     The changes are saved in the UnitOfWork.
+    /// </remarks>
+    /// <seealso cref="UnitOfWork" />
     public async Task AddAsync(Order order)
     {
         await _dbContext.Orders.AddAsync(order);
     }
 
+    /// <remarks>
+    ///     The changes are saved in the UnitOfWork.
+    /// </remarks>
+    /// <seealso cref="UnitOfWork" />
     public Task UpdateAsync(Order order)
     {
         _dbContext.Orders.Update(order);
