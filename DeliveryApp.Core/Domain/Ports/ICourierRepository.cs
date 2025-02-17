@@ -7,5 +7,5 @@ public interface ICourierRepository
     Task AddAsync(Courier courier);
     Task UpdateAsync(Courier courier);
     Task<Courier> GetAsync(Guid id);
-    Task<List<Courier>> GetAllReadyAsync();
+    Task<List<Courier>> GetAllFreeAsync();
 }

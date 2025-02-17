@@ -26,19 +26,22 @@ public class PostgresCourierRepository(ApplicationDbContext dbContext) : ICourie
     {
         if (courier.Transport != null) _dbContext.Attach(courier.Transport);
         _dbContext.Couriers.Update(courier);
+
         return Task.CompletedTask;
     }
 
     public async Task<Courier> GetAsync(Guid id)
     {
-        return await _dbContext.Couriers
+        return await _dbContext
+            .Couriers
             .Include(x => x.Transport)
-            .SingleOrDefaultAsync(x => x.Id == id);
+            .SingleOrDefaultAsync(x => x.Id.Equals(id));
     }
 
-    public async Task<List<Courier>> GetAllReadyAsync()
+    public async Task<List<Courier>> GetAllFreeAsync()
     {
-        return await _dbContext.Couriers
+        return await _dbContext
+            .Couriers
             .Include(x => x.Transport)
             .Where(x => x.Status == CourierStatus.Free)
             .ToListAsync();

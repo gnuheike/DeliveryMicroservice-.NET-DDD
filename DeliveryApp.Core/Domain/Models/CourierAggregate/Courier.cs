@@ -19,7 +19,7 @@ public class Courier : Aggregate<Guid>
     {
     }
 
-    public string Name { get; }
+    public string Name { get; private set; }
     public Transport Transport { get; }
     public Location Location { get; private set; }
     public CourierStatus Status { get; private set; }

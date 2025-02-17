@@ -29,21 +29,17 @@ internal class CourierEntityTypeConfiguration : IEntityTypeConfiguration<Courier
             .IsRequired()
             .HasForeignKey("transport_id");
 
-        entityTypeBuilder
-            .OwnsOne(entity => entity.Status, s =>
-            {
-                s.Property(status => status.Name)
-                    .HasColumnName("status_name")
-                    .IsRequired();
-            });
+        entityTypeBuilder.OwnsOne(entity => entity.Status, s =>
+        {
+            s.Property(status => status.Name).HasColumnName("status_name").IsRequired();
+            s.WithOwner();
+        });
 
-
-        entityTypeBuilder
-            .OwnsOne(entity => entity.Location, l =>
-            {
-                l.Property(x => x.X).HasColumnName("location_x").IsRequired();
-                l.Property(y => y.Y).HasColumnName("location_y").IsRequired();
-                l.WithOwner();
-            });
+        entityTypeBuilder.OwnsOne(entity => entity.Location, l =>
+        {
+            l.Property(x => x.X).HasColumnName("location_x").IsRequired();
+            l.Property(y => y.Y).HasColumnName("location_y").IsRequired();
+            l.WithOwner();
+        });
     }
 }
