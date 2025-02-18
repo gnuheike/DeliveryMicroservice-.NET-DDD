@@ -1,6 +1,6 @@
 using System;
-using DeliveryApp.Core.Domain.Model.CourierAggregate;
-using DeliveryApp.Core.Domain.Model.OrderAggregate;
+using DeliveryApp.Core.Domain.Models.CourierAggregate;
+using DeliveryApp.Core.Domain.Models.OrderAggregate;
 using DeliveryApp.Core.Domain.Services;
 using DeliveryApp.Core.Domain.SharedKernel;
 using FluentAssertions;

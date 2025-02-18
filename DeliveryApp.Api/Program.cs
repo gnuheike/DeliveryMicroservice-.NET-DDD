@@ -1,5 +1,10 @@
 using DeliveryApp.Api;
+using DeliveryApp.Core.Domain.Ports;
 using DeliveryApp.Core.Domain.Services;
+using DeliveryApp.Infrastructure.Adapters.Postgres;
+using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Primitives;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,19 +15,32 @@ builder.Services.AddHealthChecks();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(
-        policy =>
-        {
-            policy.AllowAnyOrigin(); // Не делайте так в проде!
-        });
+        policy => { policy.AllowAnyOrigin(); });
 });
 
 // Configuration
 builder.Services.ConfigureOptions<SettingsSetup>();
 
-// DI
+// Domain Services
 builder.Services.AddSingleton<IDispatchService, DispatchService>();
 
+// Database
 var connectionString = builder.Configuration["CONNECTION_STRING"];
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    {
+        options.UseNpgsql(connectionString,
+            sqlOptions => { sqlOptions.MigrationsAssembly("DeliveryApp.Infrastructure"); });
+
+        // Since it's a study application, we can enable sensitive data logging.
+        options.EnableSensitiveDataLogging();
+    }
+);
+
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<ICourierRepository, PostgresCourierRepository>();
+builder.Services.AddScoped<IOrderRepository, PostgresOrderRepository>();
+
 
 var app = builder.Build();
 
@@ -37,10 +55,11 @@ app.UseHealthChecks("/health");
 app.UseRouting();
 
 // Apply Migrations
-// using (var scope = app.Services.CreateScope())
-// {
-//     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-//     db.Database.Migrate();
-// }
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
+
 
 app.Run();

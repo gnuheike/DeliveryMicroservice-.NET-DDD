@@ -1,9 +1,10 @@
 using CSharpFunctionalExtensions;
-using DeliveryApp.Core.Domain.Model.CourierAggregate;
+using DeliveryApp.Core.Domain.Models.CourierAggregate;
+using DeliveryApp.Core.Domain.Models.OrderAggregate.VO;
 using DeliveryApp.Core.Domain.SharedKernel;
 using Primitives;
 
-namespace DeliveryApp.Core.Domain.Model.OrderAggregate;
+namespace DeliveryApp.Core.Domain.Models.OrderAggregate;
 
 public class Order : Aggregate<Guid>
 {

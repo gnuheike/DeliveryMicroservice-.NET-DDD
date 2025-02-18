@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using CSharpFunctionalExtensions;
 
-namespace DeliveryApp.Core.Domain.Model.CourierAggregate;
+namespace DeliveryApp.Core.Domain.Models.CourierAggregate;
 
 public class CourierStatus : ValueObject
 {
@@ -19,6 +19,9 @@ public class CourierStatus : ValueObject
     }
 
     public string Name { get; }
+
+    // We have to keep the reference to the courier for Entity Framework
+    public Guid CourierId { get; private set; }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
