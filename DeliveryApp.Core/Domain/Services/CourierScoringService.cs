@@ -7,7 +7,7 @@ namespace DeliveryApp.Core.Domain.Services;
 
 public class CourierScoringService : ICourierScoringService
 {
-    public Result<Courier, Error> Execute(Order order, List<Courier> couriers)
+    public Result<Courier, Error> FindClosestAvailableCourier(Order order, List<Courier> couriers)
     {
         if (order == null) return Errors.OrderIsRequired();
         if (couriers == null || couriers.Count == 0) return Errors.AtLeastOneCourierIsRequired();

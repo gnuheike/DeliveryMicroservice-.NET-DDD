@@ -22,7 +22,7 @@ public class AssignCouriersCommandHandler(
 
         foreach (var order in createdOrders)
         {
-            var bestCourier = courierScoringService.Execute(order, freeCouriers);
+            var bestCourier = courierScoringService.FindClosestAvailableCourier(order, freeCouriers);
 
             if (bestCourier.IsFailure)
             {

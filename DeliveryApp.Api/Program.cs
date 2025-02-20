@@ -2,10 +2,9 @@ using System.Reflection;
 using DeliveryApp.Api;
 using DeliveryApp.Api.Application.UseCases.Queries.GetAllNonCompletedOrders;
 using DeliveryApp.Api.Application.UseCases.Queries.GetBusyCouriers;
-using DeliveryApp.Core.Application.UseCases.Commands;
 using DeliveryApp.Core.Application.UseCases.Commands.AssignCouriers;
 using DeliveryApp.Core.Application.UseCases.Commands.CreateOrder;
-using DeliveryApp.Core.Application.UseCases.Commands.MoveCouriers;
+using DeliveryApp.Core.Application.UseCases.Commands.UpdateCourierLocations;
 using DeliveryApp.Core.Domain.Ports;
 using DeliveryApp.Core.Domain.Services;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
@@ -61,8 +60,8 @@ builder.Services.AddTransient<
     CreateOrderCommandHandler
 >();
 builder.Services.AddTransient<
-    IRequestHandler<MoveCouriersCommand, bool>,
-    MoveCouriersCommandHandler
+    IRequestHandler<UpdateCourierLocationsCommand, bool>,
+    UpdateCourierLocationsCommandHandler
 >();
 builder.Services.AddTransient<
     IRequestHandler<AssignCouriersCommand, bool>,
@@ -71,8 +70,8 @@ builder.Services.AddTransient<
 
 // Queries
 builder.Services.AddTransient<
-    IRequestHandler<GetBusyCouriersCommand, GetBusyCouriersResponse>,
-    GetBusyCouriersCommandHandler
+    IRequestHandler<GetBusyCouriersQuery, GetBusyCouriersResponse>,
+    GetBusyCouriersQueryHandler
 >();
 builder.Services.AddTransient<
     IRequestHandler<GetAllNonCompletedOrdersQuery, GetAllNonCompletedOrdersResponse>,

@@ -7,5 +7,5 @@ namespace DeliveryApp.Core.Domain.Services;
 
 public interface ICourierScoringService
 {
-    public Result<Courier, Error> Execute(Order order, List<Courier> couriers);
+    public Result<Courier, Error> FindClosestAvailableCourier(Order order, List<Courier> couriers);
 }

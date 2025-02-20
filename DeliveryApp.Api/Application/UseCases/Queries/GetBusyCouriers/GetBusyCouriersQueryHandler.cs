@@ -3,12 +3,12 @@ using MediatR;
 
 namespace DeliveryApp.Api.Application.UseCases.Queries.GetBusyCouriers;
 
-public class GetBusyCouriersCommandHandler(
+public class GetBusyCouriersQueryHandler(
     ICourierRepository courierRepository
-) : IRequestHandler<GetBusyCouriersCommand, GetBusyCouriersResponse>
+) : IRequestHandler<GetBusyCouriersQuery, GetBusyCouriersResponse>
 {
     public async Task<GetBusyCouriersResponse> Handle(
-        GetBusyCouriersCommand request,
+        GetBusyCouriersQuery request,
         CancellationToken cancellationToken
     )
     {

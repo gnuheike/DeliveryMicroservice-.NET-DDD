@@ -21,7 +21,7 @@ public class DispatchServiceShould
         var dispatchService = new CourierScoringService();
 
         // Act
-        var result = dispatchService.Execute(order, [closestCourier, fartherCourier]);
+        var result = dispatchService.FindClosestAvailableCourier(order, [closestCourier, fartherCourier]);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -41,7 +41,7 @@ public class DispatchServiceShould
         var dispatchService = new CourierScoringService();
 
         // Act
-        var result = dispatchService.Execute(order, [busyCourier, freeCourier]);
+        var result = dispatchService.FindClosestAvailableCourier(order, [busyCourier, freeCourier]);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -59,7 +59,7 @@ public class DispatchServiceShould
         var dispatchService = new CourierScoringService();
 
         // Act
-        var result = dispatchService.Execute(order, [busyCourier]);
+        var result = dispatchService.FindClosestAvailableCourier(order, [busyCourier]);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -74,7 +74,7 @@ public class DispatchServiceShould
         var dispatchService = new CourierScoringService();
 
         // Act
-        var result = dispatchService.Execute(order, []);
+        var result = dispatchService.FindClosestAvailableCourier(order, []);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -88,7 +88,7 @@ public class DispatchServiceShould
         var dispatchService = new CourierScoringService();
 
         // Act
-        var result = dispatchService.Execute(null, []);
+        var result = dispatchService.FindClosestAvailableCourier(null, []);
 
         // Assert
         result.IsFailure.Should().BeTrue();
