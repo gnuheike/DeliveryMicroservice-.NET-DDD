@@ -4,6 +4,7 @@ using DeliveryApp.Core.Application.UseCases.Commands;
 using DeliveryApp.Core.Application.UseCases.Commands.AssignCouriers;
 using DeliveryApp.Core.Application.UseCases.Commands.CreateOrder;
 using DeliveryApp.Core.Application.UseCases.Commands.MoveCouriers;
+using DeliveryApp.Core.Application.UseCases.Queries.GetBusyCouriers;
 using DeliveryApp.Core.Domain.Ports;
 using DeliveryApp.Core.Domain.Services;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
@@ -68,7 +69,10 @@ builder.Services.AddTransient<
 >();
 
 // Queries
-
+builder.Services.AddTransient<
+    IRequestHandler<GetBusyCouriersCommand, GetBusyCouriersResponse>,
+    GetBusyCouriersCommandHandler
+>();
 
 var app = builder.Build();
 
