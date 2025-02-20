@@ -5,9 +5,9 @@ using Primitives;
 
 namespace DeliveryApp.Core.Domain.Services;
 
-public class DispatchService : IDispatchService
+public class CourierScoringService : ICourierScoringService
 {
-    public Result<Courier, Error> Dispatch(Order order, List<Courier> couriers)
+    public Result<Courier, Error> Execute(Order order, List<Courier> couriers)
     {
         if (order == null) return Errors.OrderIsRequired();
         if (couriers == null || couriers.Count == 0) return Errors.AtLeastOneCourierIsRequired();
@@ -27,7 +27,7 @@ public class DispatchService : IDispatchService
         public static Error AtLeastOneCourierIsRequired()
         {
             return new Error(
-                $"{nameof(DispatchService).ToLowerInvariant()}.at.least.one.courier.is.required",
+                $"{nameof(CourierScoringService).ToLowerInvariant()}.at.least.one.courier.is.required",
                 "At least one courier is required"
             );
         }
@@ -35,7 +35,7 @@ public class DispatchService : IDispatchService
         public static Error OrderIsRequired()
         {
             return new Error(
-                $"{nameof(DispatchService).ToLowerInvariant()}.order.is.required",
+                $"{nameof(CourierScoringService).ToLowerInvariant()}.order.is.required",
                 "Order is required"
             );
         }
@@ -43,7 +43,7 @@ public class DispatchService : IDispatchService
         public static Error NoCourierFound()
         {
             return new Error(
-                $"{nameof(DispatchService).ToLowerInvariant()}.no.courier.found",
+                $"{nameof(CourierScoringService).ToLowerInvariant()}.no.courier.found",
                 "No courier found"
             );
         }

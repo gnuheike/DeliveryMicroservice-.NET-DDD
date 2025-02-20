@@ -18,10 +18,10 @@ public class DispatchServiceShould
         var closestCourier = Courier.Create("Ivan", Transport.Pedestrian, Location.MinimalLocation).Value;
         var fartherCourier = Courier.Create("Oleg", Transport.Pedestrian, Location.MaximumLocation).Value;
 
-        var dispatchService = new DispatchService();
+        var dispatchService = new CourierScoringService();
 
         // Act
-        var result = dispatchService.Dispatch(order, [closestCourier, fartherCourier]);
+        var result = dispatchService.Execute(order, [closestCourier, fartherCourier]);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -38,10 +38,10 @@ public class DispatchServiceShould
         busyCourier.SetBusy();
         var freeCourier = Courier.Create("Oleg", Transport.Pedestrian, Location.MaximumLocation).Value;
 
-        var dispatchService = new DispatchService();
+        var dispatchService = new CourierScoringService();
 
         // Act
-        var result = dispatchService.Dispatch(order, [busyCourier, freeCourier]);
+        var result = dispatchService.Execute(order, [busyCourier, freeCourier]);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -56,14 +56,14 @@ public class DispatchServiceShould
         var busyCourier = Courier.Create("Ivan", Transport.Pedestrian, Location.MinimalLocation).Value;
         busyCourier.SetBusy();
 
-        var dispatchService = new DispatchService();
+        var dispatchService = new CourierScoringService();
 
         // Act
-        var result = dispatchService.Dispatch(order, [busyCourier]);
+        var result = dispatchService.Execute(order, [busyCourier]);
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(DispatchService.Errors.NoCourierFound());
+        result.Error.Should().Be(CourierScoringService.Errors.NoCourierFound());
     }
 
     [Fact]
@@ -71,27 +71,27 @@ public class DispatchServiceShould
     {
         // Arrange
         var order = Order.Create(Guid.NewGuid(), Location.MinimalLocation).Value;
-        var dispatchService = new DispatchService();
+        var dispatchService = new CourierScoringService();
 
         // Act
-        var result = dispatchService.Dispatch(order, []);
+        var result = dispatchService.Execute(order, []);
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(DispatchService.Errors.AtLeastOneCourierIsRequired());
+        result.Error.Should().Be(CourierScoringService.Errors.AtLeastOneCourierIsRequired());
     }
 
     [Fact]
     public void ReturnError_WhenOrderIsNull()
     {
         // Arrange
-        var dispatchService = new DispatchService();
+        var dispatchService = new CourierScoringService();
 
         // Act
-        var result = dispatchService.Dispatch(null, []);
+        var result = dispatchService.Execute(null, []);
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(DispatchService.Errors.OrderIsRequired());
+        result.Error.Should().Be(CourierScoringService.Errors.OrderIsRequired());
     }
 }

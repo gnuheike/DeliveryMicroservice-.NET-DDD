@@ -1,6 +1,7 @@
 using System.Reflection;
 using DeliveryApp.Api;
 using DeliveryApp.Core.Application.UseCases.Commands;
+using DeliveryApp.Core.Application.UseCases.Commands.AssignCouriers;
 using DeliveryApp.Core.Application.UseCases.Commands.CreateOrder;
 using DeliveryApp.Core.Application.UseCases.Commands.MoveCouriers;
 using DeliveryApp.Core.Domain.Ports;
@@ -27,7 +28,7 @@ builder.Services.AddCors(options =>
 builder.Services.ConfigureOptions<SettingsSetup>();
 
 // Domain Services
-builder.Services.AddSingleton<IDispatchService, DispatchService>();
+builder.Services.AddSingleton<ICourierScoringService, CourierScoringService>();
 
 // Database
 var connectionString = builder.Configuration["CONNECTION_STRING"];
@@ -60,6 +61,10 @@ builder.Services.AddTransient<
 builder.Services.AddTransient<
     IRequestHandler<MoveCouriersCommand, bool>,
     MoveCouriersCommandHandler
+>();
+builder.Services.AddTransient<
+    IRequestHandler<AssignCouriersCommand, bool>,
+    AssignCouriersCommandHandler
 >();
 
 // Queries
