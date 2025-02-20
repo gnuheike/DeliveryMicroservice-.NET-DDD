@@ -5,7 +5,7 @@ using DeliveryApp.Core.Domain.SharedKernel;
 using MediatR;
 using Primitives;
 
-namespace DeliveryApp.Core.Application.UseCases.Commands;
+namespace DeliveryApp.Core.Application.UseCases.Commands.CreateOrder;
 
 public class CreateOrderCommandHandler(
     IOrderRepository orderRepository,

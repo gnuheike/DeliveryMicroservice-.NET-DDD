@@ -1,6 +1,8 @@
 using System.Reflection;
 using DeliveryApp.Api;
 using DeliveryApp.Core.Application.UseCases.Commands;
+using DeliveryApp.Core.Application.UseCases.Commands.CreateOrder;
+using DeliveryApp.Core.Application.UseCases.Commands.MoveCouriers;
 using DeliveryApp.Core.Domain.Ports;
 using DeliveryApp.Core.Domain.Services;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
@@ -54,6 +56,10 @@ builder.Services.AddMediatR(
 builder.Services.AddTransient<
     IRequestHandler<CreateOrderCommand, bool>,
     CreateOrderCommandHandler
+>();
+builder.Services.AddTransient<
+    IRequestHandler<MoveCouriersCommand, bool>,
+    MoveCouriersCommandHandler
 >();
 
 // Queries
