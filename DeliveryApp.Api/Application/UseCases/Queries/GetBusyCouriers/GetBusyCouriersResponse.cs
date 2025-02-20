@@ -1,7 +1,7 @@
 using DeliveryApp.Core.Domain.Models.CourierAggregate;
 using DeliveryApp.Core.Domain.SharedKernel;
 
-namespace DeliveryApp.Core.Application.UseCases.Queries.GetBusyCouriers;
+namespace DeliveryApp.Api.Application.UseCases.Queries.GetBusyCouriers;
 
 public class GetBusyCouriersResponse(List<CourierDto> couriers)
 {
