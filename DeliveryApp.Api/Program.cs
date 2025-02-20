@@ -1,8 +1,11 @@
+using System.Reflection;
 using DeliveryApp.Api;
+using DeliveryApp.Core.Application.UseCases.Commands;
 using DeliveryApp.Core.Domain.Ports;
 using DeliveryApp.Core.Domain.Services;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Primitives;
 
@@ -40,6 +43,20 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICourierRepository, PostgresCourierRepository>();
 builder.Services.AddScoped<IOrderRepository, PostgresOrderRepository>();
+
+
+// MediatR
+builder.Services.AddMediatR(
+    cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly())
+);
+
+// Commands
+builder.Services.AddTransient<
+    IRequestHandler<CreateOrderCommand, bool>,
+    CreateOrderCommandHandler
+>();
+
+// Queries
 
 
 var app = builder.Build();

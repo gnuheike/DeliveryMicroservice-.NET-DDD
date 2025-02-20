@@ -19,4 +19,8 @@
         <ProjectReference Include="..\Utils\Primitives\Primitives.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="Application\UseCases\Queries\"/>
+    </ItemGroup>
+
 </Project>
