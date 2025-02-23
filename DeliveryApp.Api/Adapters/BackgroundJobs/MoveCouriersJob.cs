@@ -9,7 +9,6 @@ public class MoveCouriersJob(IMediator mediator) : IJob
 {
     public Task Execute(IJobExecutionContext context)
     {
-        Console.WriteLine("MoveCouriersJob");
         return mediator.Send(new MoveCouriersCommand());
     }
 }

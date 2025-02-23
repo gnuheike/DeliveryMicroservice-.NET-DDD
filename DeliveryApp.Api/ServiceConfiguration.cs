@@ -11,6 +11,7 @@ using DeliveryApp.Infrastructure.Adapters.Postgres;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Npgsql;
 using Primitives;
 using Quartz;
@@ -21,18 +22,38 @@ public static class ServiceConfiguration
 {
     public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        AddHealthChecks(services);
-        ConfigureCors(services);
-        ConfigureSettings(services);
-        RegisterDomainServices(services);
-        ConfigureDatabase(services, configuration);
-        RegisterRepositories(services);
-        ConfigureMediatR(services);
-        RegisterHandlers(services);
-        RegisterQuartz(services);
+        Settings(services);
+        HealthChecks(services);
+        Cors(services);
+
+        MediatR(services);
+        Quartz(services);
+
+        Handlers(services);
+        DomainServices(services);
+        Database(services, configuration);
+        Repositories(services);
+        Handlers(services);
+
+        Swagger(services);
     }
 
-    private static void RegisterQuartz(IServiceCollection services)
+    private static void Swagger(IServiceCollection services)
+    {
+        services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("1.0.0", new OpenApiInfo
+            {
+                Title = "Delivery Service",
+                Version = "v1"
+            });
+        });
+        services.AddMvcCore();
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGenNewtonsoftSupport();
+    }
+
+    private static void Quartz(IServiceCollection services)
     {
         // CRON Jobs
         services.AddQuartz(configure =>
@@ -52,32 +73,31 @@ public static class ServiceConfiguration
                         .WithSimpleSchedule(
                             schedule => schedule.WithIntervalInSeconds(2)
                                 .RepeatForever()));
-            configure.UseMicrosoftDependencyInjectionJobFactory();
         });
         services.AddQuartzHostedService();
     }
 
-    private static void AddHealthChecks(IServiceCollection services)
+    private static void HealthChecks(IServiceCollection services)
     {
         services.AddHealthChecks();
     }
 
-    private static void ConfigureCors(IServiceCollection services)
+    private static void Cors(IServiceCollection services)
     {
         services.AddCors(options => { options.AddDefaultPolicy(policy => { policy.AllowAnyOrigin(); }); });
     }
 
-    private static void ConfigureSettings(IServiceCollection services)
+    private static void Settings(IServiceCollection services)
     {
         services.ConfigureOptions<SettingsSetup>();
     }
 
-    private static void RegisterDomainServices(IServiceCollection services)
+    private static void DomainServices(IServiceCollection services)
     {
         services.AddSingleton<ICourierScoringService, CourierScoringService>();
     }
 
-    private static void ConfigureDatabase(IServiceCollection services, IConfiguration configuration)
+    private static void Database(IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration["CONNECTION_STRING"];
         services.AddDbContext<ApplicationDbContext>(options =>
@@ -89,19 +109,19 @@ public static class ServiceConfiguration
         services.AddSingleton(_ => new NpgsqlConnection(connectionString));
     }
 
-    private static void RegisterRepositories(IServiceCollection services)
+    private static void Repositories(IServiceCollection services)
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ICourierRepository, PostgresCourierRepository>();
         services.AddScoped<IOrderRepository, PostgresOrderRepository>();
     }
 
-    private static void ConfigureMediatR(IServiceCollection services)
+    private static void MediatR(IServiceCollection services)
     {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
     }
 
-    private static void RegisterHandlers(IServiceCollection services)
+    private static void Handlers(IServiceCollection services)
     {
         services.AddTransient<IRequestHandler<CreateOrderCommand, bool>, CreateOrderCommandHandler>();
         services
