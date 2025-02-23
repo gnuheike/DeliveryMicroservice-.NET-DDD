@@ -22,6 +22,9 @@ public class OrderStatus : ValueObject
 
     public string Name { get; }
 
+    // We have to keep the reference to the courier for Entity Framework
+    public Guid OrderId { get; private set; }
+
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return Name;

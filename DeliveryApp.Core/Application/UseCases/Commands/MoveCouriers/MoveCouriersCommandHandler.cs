@@ -2,15 +2,15 @@ using DeliveryApp.Core.Domain.Ports;
 using MediatR;
 using Primitives;
 
-namespace DeliveryApp.Core.Application.UseCases.Commands.UpdateCourierLocations;
+namespace DeliveryApp.Core.Application.UseCases.Commands.MoveCouriers;
 
-public class UpdateCourierLocationsCommandHandler(
+public class MoveCouriersCommandHandler(
     ICourierRepository courierRepository,
     IOrderRepository orderRepository,
     IUnitOfWork unitOfWork
-) : IRequestHandler<UpdateCourierLocationsCommand, bool>
+) : IRequestHandler<MoveCouriersCommand, bool>
 {
-    public async Task<bool> Handle(UpdateCourierLocationsCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(MoveCouriersCommand request, CancellationToken cancellationToken)
     {
         var assignedOrders = await orderRepository.GetAllAssignedAsync();
         var busyCouriers = await courierRepository.GetAllBusyAsync();
