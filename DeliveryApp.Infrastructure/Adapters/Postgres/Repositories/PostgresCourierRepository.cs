@@ -40,19 +40,21 @@ public class PostgresCourierRepository(ApplicationDbContext dbContext) : ICourie
 
     public async Task<List<Courier>> GetAllFreeAsync()
     {
+        var freeStatus = CourierStatus.Free();
         return await _dbContext
             .Couriers
             .Include(x => x.Transport)
-            .Where(x => x.Status == CourierStatus.Free)
+            .Where(x => x.Status.Name == freeStatus.Name)
             .ToListAsync();
     }
 
     public Task<List<Courier>> GetAllBusyAsync()
     {
+        var busyStatus = CourierStatus.Busy();
         return _dbContext
             .Couriers
             .Include(x => x.Transport)
-            .Where(x => x.Status == CourierStatus.Busy)
+            .Where(x => x.Status.Name == busyStatus.Name)
             .ToListAsync();
     }
 }

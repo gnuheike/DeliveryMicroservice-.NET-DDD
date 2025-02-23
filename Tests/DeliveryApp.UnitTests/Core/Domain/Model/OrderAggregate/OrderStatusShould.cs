@@ -1,4 +1,4 @@
-using DeliveryApp.Core.Domain.Models.OrderAggregate.VO;
+using DeliveryApp.Core.Domain.Models.OrderAggregate;
 using FluentAssertions;
 using Xunit;
 
@@ -9,33 +9,33 @@ public class OrderStatusShould
     [Fact]
     public void ShouldHaveCorrectNameForCreatedStatus()
     {
-        var status = OrderStatus.Created;
+        var status = OrderStatus.Created();
         status.Name.Should().Be("created");
     }
 
     [Fact]
     public void ShouldHaveCorrectNameForAssignedStatus()
     {
-        var status = OrderStatus.Assigned;
+        var status = OrderStatus.Assigned();
         status.Name.Should().Be("assigned");
     }
 
     [Fact]
     public void ShouldHaveCorrectNameForCompletedStatus()
     {
-        var status = OrderStatus.Completed;
+        var status = OrderStatus.Completed();
         status.Name.Should().Be("completed");
     }
 
     [Fact]
     public void CreatedAndAssignedStatusesShouldBeDifferent()
     {
-        OrderStatus.Created.Should().NotBe(OrderStatus.Assigned);
+        OrderStatus.Created().Should().NotBe(OrderStatus.Assigned());
     }
 
     [Fact]
     public void AssignedAndCompletedStatusesShouldBeDifferent()
     {
-        OrderStatus.Assigned.Should().NotBe(OrderStatus.Completed);
+        OrderStatus.Assigned().Should().NotBe(OrderStatus.Completed());
     }
 }

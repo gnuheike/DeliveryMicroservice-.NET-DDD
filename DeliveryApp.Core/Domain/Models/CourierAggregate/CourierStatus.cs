@@ -5,9 +5,6 @@ namespace DeliveryApp.Core.Domain.Models.CourierAggregate;
 
 public class CourierStatus : ValueObject
 {
-    public static readonly CourierStatus Free = new(nameof(Free).ToLowerInvariant());
-    public static readonly CourierStatus Busy = new(nameof(Busy).ToLowerInvariant());
-
     [ExcludeFromCodeCoverage]
     private CourierStatus()
     {
@@ -18,10 +15,19 @@ public class CourierStatus : ValueObject
         Name = name;
     }
 
-    public string Name { get; }
-
-    // We have to keep the reference to the courier for Entity Framework
+    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
+    public string Name { get; private set; }
     public Guid CourierId { get; private set; }
+
+    public static CourierStatus Free()
+    {
+        return new CourierStatus(nameof(Free).ToLowerInvariant());
+    }
+
+    public static CourierStatus Busy()
+    {
+        return new CourierStatus(nameof(Busy).ToLowerInvariant());
+    }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {

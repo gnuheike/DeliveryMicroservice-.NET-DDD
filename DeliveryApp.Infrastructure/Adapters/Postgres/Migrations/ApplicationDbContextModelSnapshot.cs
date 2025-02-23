@@ -175,7 +175,7 @@ namespace DeliveryApp.Infrastructure.Adapters.Postgres.Migrations
                                 .HasForeignKey("OrderId");
                         });
 
-                    b.OwnsOne("DeliveryApp.Core.Domain.Models.OrderAggregate.VO.OrderStatus", "Status", b1 =>
+                    b.OwnsOne("DeliveryApp.Core.Domain.Models.OrderAggregate.OrderStatus", "Status", b1 =>
                         {
                             b1.Property<Guid>("OrderId")
                                 .HasColumnType("uuid");

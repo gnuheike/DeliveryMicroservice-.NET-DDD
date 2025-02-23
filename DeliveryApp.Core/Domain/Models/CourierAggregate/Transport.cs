@@ -10,9 +10,9 @@ namespace DeliveryApp.Core.Domain.Models.CourierAggregate;
  */
 public class Transport : Entity<int>
 {
-    public static Transport Pedestrian = new(1, nameof(Pedestrian).ToLowerInvariant(), 1);
-    public static Transport Bicycle = new(2, nameof(Bicycle).ToLowerInvariant(), 2);
-    public static Transport Car = new(3, nameof(Car).ToLowerInvariant(), 3);
+    public static readonly Transport Pedestrian = new(1, nameof(Pedestrian).ToLowerInvariant(), 1);
+    public static readonly Transport Bicycle = new(2, nameof(Bicycle).ToLowerInvariant(), 2);
+    public static readonly Transport Car = new(3, nameof(Car).ToLowerInvariant(), 3);
     private static readonly Transport[] All;
 
     static Transport()

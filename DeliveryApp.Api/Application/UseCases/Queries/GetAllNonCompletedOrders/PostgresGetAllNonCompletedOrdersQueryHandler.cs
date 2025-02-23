@@ -1,6 +1,6 @@
 using System.Data;
 using Dapper;
-using DeliveryApp.Core.Domain.Models.OrderAggregate.VO;
+using DeliveryApp.Core.Domain.Models.OrderAggregate;
 using MediatR;
 using Npgsql;
 
@@ -36,7 +36,7 @@ public class PostgresGetAllNonCompletedOrdersQueryHandler(
                 order.LocationDto = location;
                 return order;
             },
-            new { status = OrderStatus.Completed.Name },
+            new { status = OrderStatus.Completed().Name },
             splitOn: "LocationX"
         );
 

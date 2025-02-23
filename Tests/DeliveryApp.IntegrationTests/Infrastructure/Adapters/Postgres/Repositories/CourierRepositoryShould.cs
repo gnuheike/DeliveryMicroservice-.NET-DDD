@@ -18,7 +18,7 @@ public class CourierRepositoryShould : IAsyncLifetime
         .WithCleanUp(true)
         .Build();
 
-    private readonly Location _location = Location.MinimalLocation;
+    private readonly Location _location = Location.MinimumLocation();
     private readonly Transport _transport = Transport.Bicycle;
 
     private ApplicationDbContext _context;
@@ -83,9 +83,10 @@ public class CourierRepositoryShould : IAsyncLifetime
     public async Task CanGetAllFreeAsync()
     {
         // Arrange
-        var courier1 = Courier.Create("name1", _transport, _location).Value;
-        var courier2 = Courier.Create("name2", _transport, _location).Value;
-        courier2.SetBusy();
+        var courier1 = Courier.Create("name1", _transport, Location.MinimumLocation()).Value;
+        var courier2 = Courier.Create("name2", _transport, Location.MinimumLocation()).Value;
+        var courier3 = Courier.Create("name3", _transport, Location.MinimumLocation()).Value;
+        courier3.SetBusy();
 
         var courierRepository = new PostgresCourierRepository(_context);
         var unitOfWork = new UnitOfWork(_context);
@@ -93,11 +94,17 @@ public class CourierRepositoryShould : IAsyncLifetime
         // Act
         await courierRepository.AddAsync(courier1);
         await courierRepository.AddAsync(courier2);
+        await courierRepository.AddAsync(courier3);
         await unitOfWork.SaveChangesAsync();
+
+        // perform raw query just to check what's in the table
+        var couriers = await _context.Couriers.ToListAsync();
+        foreach (var courier in couriers) Console.WriteLine(courier);
 
         // Assert
         var freeCouriers = await courierRepository.GetAllFreeAsync();
         Assert.Contains(courier1, freeCouriers);
-        Assert.DoesNotContain(courier2, freeCouriers);
+        Assert.Contains(courier2, freeCouriers);
+        Assert.DoesNotContain(courier3, freeCouriers);
     }
 }

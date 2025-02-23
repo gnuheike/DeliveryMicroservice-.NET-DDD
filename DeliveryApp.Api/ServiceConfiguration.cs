@@ -1,5 +1,8 @@
 using System.Reflection;
+using Api.Filters;
+using Api.OpenApi;
 using DeliveryApp.Api.Adapters.BackgroundJobs;
+using DeliveryApp.Api.Adapters.Http.Mapper;
 using DeliveryApp.Api.Application.UseCases.Queries.GetAllNonCompletedOrders;
 using DeliveryApp.Api.Application.UseCases.Queries.GetBusyCouriers;
 using DeliveryApp.Core.Application.UseCases.Commands.AssignOrders;
@@ -33,9 +36,15 @@ public static class ServiceConfiguration
         DomainServices(services);
         Database(services, configuration);
         Repositories(services);
-        Handlers(services);
+        HttpMappers(services);
 
         Swagger(services);
+    }
+
+    private static void HttpMappers(IServiceCollection services)
+    {
+        services.AddTransient<OrderMapper>();
+        services.AddTransient<CouriersMapper>();
     }
 
     private static void Swagger(IServiceCollection services)
@@ -47,10 +56,16 @@ public static class ServiceConfiguration
                 Title = "Delivery Service",
                 Version = "v1"
             });
+            options.CustomSchemaIds(type => type.FriendlyId(true));
+            options.IncludeXmlComments(
+                $"{AppContext.BaseDirectory}{Path.DirectorySeparatorChar}{Assembly.GetEntryAssembly()?.GetName().Name}.xml");
+            options.DocumentFilter<BasePathFilter>("");
+            options.OperationFilter<GeneratePathParamsValidationFilter>();
         });
         services.AddMvcCore();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGenNewtonsoftSupport();
+        services.AddControllers();
     }
 
     private static void Quartz(IServiceCollection services)

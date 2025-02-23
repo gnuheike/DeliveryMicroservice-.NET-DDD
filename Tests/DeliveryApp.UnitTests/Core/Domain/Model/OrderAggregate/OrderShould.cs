@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using DeliveryApp.Core.Domain.Models.CourierAggregate;
 using DeliveryApp.Core.Domain.Models.OrderAggregate;
-using DeliveryApp.Core.Domain.Models.OrderAggregate.VO;
 using DeliveryApp.Core.Domain.SharedKernel;
 using FluentAssertions;
 using Xunit;

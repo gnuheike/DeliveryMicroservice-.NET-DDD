@@ -1,6 +1,5 @@
 using CSharpFunctionalExtensions;
 using DeliveryApp.Core.Domain.Models.CourierAggregate;
-using DeliveryApp.Core.Domain.Models.OrderAggregate.VO;
 using DeliveryApp.Core.Domain.SharedKernel;
 using Primitives;
 
@@ -16,7 +15,13 @@ public class Order : Aggregate<Guid>
     {
         Id = orderId;
         Location = location;
-        Status = OrderStatus.Created;
+        Status = OrderStatus.Created();
+    }
+
+    private Order(Guid orderId, Location location, Guid? courierId, OrderStatus status) : this(orderId, location)
+    {
+        CourierId = courierId;
+        Status = status;
     }
 
     public Guid? CourierId { get; private set; }
@@ -33,21 +38,21 @@ public class Order : Aggregate<Guid>
     public UnitResult<Error> Assign(Courier courier)
     {
         if (courier == null) return Errors.CourierIsRequired();
-        if (Status == OrderStatus.Completed) return Errors.CantAssignCompletedOrder();
-        if (Status == OrderStatus.Assigned) return Errors.OrderAlreadyAssigned();
-        if (courier.Status == CourierStatus.Busy) return Errors.CantAssignOrderToBusyCourier(courier.Id);
+        if (Status == OrderStatus.Completed()) return Errors.CantAssignCompletedOrder();
+        if (Status == OrderStatus.Assigned()) return Errors.OrderAlreadyAssigned();
+        if (courier.Status == CourierStatus.Busy()) return Errors.CantAssignOrderToBusyCourier(courier.Id);
 
 
         CourierId = courier.Id;
-        Status = OrderStatus.Assigned;
+        Status = OrderStatus.Assigned();
         return UnitResult.Success<Error>();
     }
 
     public UnitResult<Error> Complete()
     {
-        if (Status != OrderStatus.Assigned) return Errors.CantCompletedNotAssignedOrder();
+        if (Status != OrderStatus.Assigned()) return Errors.CantCompletedNotAssignedOrder();
 
-        Status = OrderStatus.Completed;
+        Status = OrderStatus.Completed();
         return UnitResult.Success<Error>();
     }
 

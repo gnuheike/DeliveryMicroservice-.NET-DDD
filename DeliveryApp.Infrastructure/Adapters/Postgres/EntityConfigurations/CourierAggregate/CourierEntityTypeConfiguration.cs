@@ -31,7 +31,10 @@ internal class CourierEntityTypeConfiguration : IEntityTypeConfiguration<Courier
 
         entityTypeBuilder.OwnsOne(entity => entity.Status, s =>
         {
-            s.Property(status => status.Name).HasColumnName("status_name").IsRequired();
+            s.Property(status => status.Name)
+                .HasColumnName("status_name")
+                .IsRequired()
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
             s.WithOwner();
         });
 

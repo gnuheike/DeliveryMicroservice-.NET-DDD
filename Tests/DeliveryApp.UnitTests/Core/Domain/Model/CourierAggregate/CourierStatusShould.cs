@@ -9,20 +9,20 @@ public class CourierStatusShould
     [Fact]
     public void ShouldHaveCorrectNameForFreeStatus()
     {
-        var status = CourierStatus.Free;
+        var status = CourierStatus.Free();
         status.Name.Should().Be("free");
     }
 
     [Fact]
     public void ShouldHaveCorrectNameForBusyStatus()
     {
-        var status = CourierStatus.Busy;
+        var status = CourierStatus.Busy();
         status.Name.Should().Be("busy");
     }
 
     [Fact]
     public void FreeAndBusyStatusesShouldBeDifferent()
     {
-        CourierStatus.Free.Should().NotBe(CourierStatus.Busy);
+        CourierStatus.Free().Should().NotBe(CourierStatus.Busy());
     }
 }

@@ -13,7 +13,7 @@ public class CourierScoringService : ICourierScoringService
         if (couriers == null || couriers.Count == 0) return Errors.AtLeastOneCourierIsRequired();
 
         var closestCourier = couriers
-            .Where(courier => courier.Status == CourierStatus.Free)
+            .Where(courier => courier.Status == CourierStatus.Free())
             .OrderBy(courier => courier.GetDistanceTo(order.Location))
             .FirstOrDefault();
 
