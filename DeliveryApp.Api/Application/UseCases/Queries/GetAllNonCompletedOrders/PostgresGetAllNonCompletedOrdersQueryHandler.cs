@@ -33,7 +33,7 @@ public class PostgresGetAllNonCompletedOrdersQueryHandler(
             GetNonCompletedOrdersQuery,
             (order, location) =>
             {
-                order.Location = location;
+                order.LocationDto = location;
                 return order;
             },
             new { status = OrderStatus.Completed.Name },

@@ -8,7 +8,7 @@ public class GetAllNonCompletedOrdersResponse(List<OrderDto> orders)
 public class OrderDto
 {
     public Guid Id { get; set; }
-    public LocationDto Location { get; set; }
+    public LocationDto LocationDto { get; set; }
 }
 
 public class LocationDto
