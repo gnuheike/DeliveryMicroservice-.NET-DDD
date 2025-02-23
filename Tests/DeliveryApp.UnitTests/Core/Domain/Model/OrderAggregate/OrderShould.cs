@@ -63,7 +63,7 @@ public class OrderShould
         //Assert
         result.IsSuccess.Should().BeTrue();
         order.CourierId.Should().Be(courier.Id);
-        order.Status.Should().Be(OrderStatus.Assigned);
+        order.Status.Should().Be(OrderStatus.Assigned());
     }
 
     [Fact]
@@ -80,6 +80,6 @@ public class OrderShould
         //Assert
         result.IsSuccess.Should().BeTrue();
         order.CourierId.Should().Be(courier.Id);
-        order.Status.Should().Be(OrderStatus.Completed);
+        order.Status.Should().Be(OrderStatus.Completed());
     }
 }
