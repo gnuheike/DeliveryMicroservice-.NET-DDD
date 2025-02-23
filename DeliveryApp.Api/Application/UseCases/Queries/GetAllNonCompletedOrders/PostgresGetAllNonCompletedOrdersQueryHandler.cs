@@ -18,7 +18,7 @@ public class PostgresGetAllNonCompletedOrdersQueryHandler(
             FROM 
                 public.orders 
             WHERE 
-                status != @status
+                status_name != @status
         ";
 
     public async Task<GetAllNonCompletedOrdersResponse> Handle(
