@@ -10,13 +10,23 @@ namespace DeliveryApp.UnitTests.Core.Domain.Service;
 
 public class DispatchServiceShould
 {
+    private Location GetMinimumLocation()
+    {
+        return Location.MinimumLocation();
+    }
+
+    private Location GetMaximumLocation()
+    {
+        return Location.MaximumLocation();
+    }
+
     [Fact]
     public void DispatchOrderToClosestCourier()
     {
         // Arrange
-        var order = Order.Create(Guid.NewGuid(), Location.MinimalLocation).Value;
-        var closestCourier = Courier.Create("Ivan", Transport.Pedestrian, Location.MinimalLocation).Value;
-        var fartherCourier = Courier.Create("Oleg", Transport.Pedestrian, Location.MaximumLocation).Value;
+        var order = Order.Create(Guid.NewGuid(), GetMinimumLocation()).Value;
+        var closestCourier = Courier.Create("Ivan", Transport.Pedestrian, GetMinimumLocation()).Value;
+        var fartherCourier = Courier.Create("Oleg", Transport.Pedestrian, GetMaximumLocation()).Value;
 
         var dispatchService = new CourierScoringService();
 
@@ -33,10 +43,10 @@ public class DispatchServiceShould
     public void NotDispatchOrderToBusyCourier()
     {
         // Arrange
-        var order = Order.Create(Guid.NewGuid(), Location.MinimalLocation).Value;
-        var busyCourier = Courier.Create("Ivan", Transport.Pedestrian, Location.MinimalLocation).Value;
+        var order = Order.Create(Guid.NewGuid(), GetMinimumLocation()).Value;
+        var busyCourier = Courier.Create("Ivan", Transport.Pedestrian, GetMinimumLocation()).Value;
         busyCourier.SetBusy();
-        var freeCourier = Courier.Create("Oleg", Transport.Pedestrian, Location.MaximumLocation).Value;
+        var freeCourier = Courier.Create("Oleg", Transport.Pedestrian, GetMaximumLocation()).Value;
 
         var dispatchService = new CourierScoringService();
 
@@ -52,8 +62,8 @@ public class DispatchServiceShould
     public void ReturnError_WhenNoCourierFound()
     {
         // Arrange
-        var order = Order.Create(Guid.NewGuid(), Location.MinimalLocation).Value;
-        var busyCourier = Courier.Create("Ivan", Transport.Pedestrian, Location.MinimalLocation).Value;
+        var order = Order.Create(Guid.NewGuid(), GetMinimumLocation()).Value;
+        var busyCourier = Courier.Create("Ivan", Transport.Pedestrian, GetMinimumLocation()).Value;
         busyCourier.SetBusy();
 
         var dispatchService = new CourierScoringService();
@@ -70,7 +80,7 @@ public class DispatchServiceShould
     public void ReturnError_WhenEmptyCourierList()
     {
         // Arrange
-        var order = Order.Create(Guid.NewGuid(), Location.MinimalLocation).Value;
+        var order = Order.Create(Guid.NewGuid(), GetMinimumLocation()).Value;
         var dispatchService = new CourierScoringService();
 
         // Act

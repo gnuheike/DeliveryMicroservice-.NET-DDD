@@ -35,23 +35,23 @@ public class Courier : Aggregate<Guid>
             name,
             transport,
             location,
-            CourierStatus.Free
+            CourierStatus.Free()
         );
     }
 
     public UnitResult<Error> SetBusy()
     {
-        if (!Status.Equals(CourierStatus.Free)) return Errors.CourierIsNotFree();
+        if (!Status.Equals(CourierStatus.Free())) return Errors.CourierIsNotFree();
 
-        Status = CourierStatus.Busy;
+        Status = CourierStatus.Busy();
         return UnitResult.Success<Error>();
     }
 
     public UnitResult<Error> SetFree()
     {
-        if (!Status.Equals(CourierStatus.Busy)) return Errors.CourierIsNotBusy();
+        if (!Status.Equals(CourierStatus.Busy())) return Errors.CourierIsNotBusy();
 
-        Status = CourierStatus.Free;
+        Status = CourierStatus.Free();
         return UnitResult.Success<Error>();
     }
 

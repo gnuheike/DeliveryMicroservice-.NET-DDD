@@ -2,13 +2,12 @@ using System.Diagnostics.CodeAnalysis;
 using CSharpFunctionalExtensions;
 using Primitives;
 
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
+
 namespace DeliveryApp.Core.Domain.SharedKernel;
 
 public class Location : ValueObject
 {
-    public static readonly Location MinimalLocation = new(1, 1);
-    public static readonly Location MaximumLocation = new(10, 10);
-
     [ExcludeFromCodeCoverage]
     private Location()
     {
@@ -20,14 +19,23 @@ public class Location : ValueObject
         Y = y;
     }
 
+    public int X { get; private set; }
+    public int Y { get; private set; }
 
-    public int X { get; }
-    public int Y { get; }
+    public static Location MinimumLocation()
+    {
+        return new Location(1, 1);
+    }
+
+    public static Location MaximumLocation()
+    {
+        return new Location(10, 10);
+    }
 
     public static Result<Location, Error> Create(int x, int y)
     {
-        if (x < MinimalLocation.X || x > MaximumLocation.X) return GeneralErrors.ValueIsInvalid(nameof(x));
-        if (y < MinimalLocation.Y || y > MaximumLocation.Y) return GeneralErrors.ValueIsInvalid(nameof(y));
+        if (x < MinimumLocation().X || x > MaximumLocation().X) return GeneralErrors.ValueIsInvalid(nameof(x));
+        if (y < MinimumLocation().Y || y > MaximumLocation().Y) return GeneralErrors.ValueIsInvalid(nameof(y));
 
         return new Location(x, y);
     }
@@ -36,8 +44,8 @@ public class Location : ValueObject
     {
         var random = new Random();
         return new Location(
-            random.Next(MinimalLocation.X, MaximumLocation.X + 1),
-            random.Next(MinimalLocation.Y, MaximumLocation.Y + 1)
+            random.Next(MinimumLocation().X, MaximumLocation().X + 1),
+            random.Next(MinimumLocation().Y, MaximumLocation().Y + 1)
         );
     }
 

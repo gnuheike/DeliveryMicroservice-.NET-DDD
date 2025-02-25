@@ -3,16 +3,16 @@ using DeliveryApp.Core.Domain.Services;
 using MediatR;
 using Primitives;
 
-namespace DeliveryApp.Core.Application.UseCases.Commands.AssignCouriers;
+namespace DeliveryApp.Core.Application.UseCases.Commands.AssignOrders;
 
-public class AssignCouriersCommandHandler(
+public class AssignOrdersCommandHandler(
     IOrderRepository orderRepository,
     ICourierRepository courierRepository,
     ICourierScoringService courierScoringService,
     IUnitOfWork unitOfWork
-) : IRequestHandler<AssignCouriersCommand, bool>
+) : IRequestHandler<AssignOrdersCommand, bool>
 {
-    public async Task<bool> Handle(AssignCouriersCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(AssignOrdersCommand request, CancellationToken cancellationToken)
     {
         var createdOrders = await orderRepository.GetAllCreatedAsync();
         var freeCouriers = await courierRepository.GetAllFreeAsync();

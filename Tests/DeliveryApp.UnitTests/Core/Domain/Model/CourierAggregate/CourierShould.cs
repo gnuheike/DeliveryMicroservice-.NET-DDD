@@ -8,7 +8,7 @@ public class CourierShould
 {
     private static Location CreateLocation()
     {
-        return Location.MinimalLocation;
+        return Location.MinimumLocation();
     }
 
     [Fact]
@@ -19,7 +19,7 @@ public class CourierShould
         var result = courier.SetBusy();
 
         Assert.True(result.IsSuccess);
-        Assert.Equal(CourierStatus.Busy, courier.Status);
+        Assert.Equal(CourierStatus.Busy(), courier.Status);
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class CourierShould
         var result = courier.SetFree();
 
         Assert.True(result.IsSuccess);
-        Assert.Equal(CourierStatus.Free, courier.Status);
+        Assert.Equal(CourierStatus.Free(), courier.Status);
     }
 
     [Fact]
@@ -107,7 +107,7 @@ public class CourierShould
     [Fact]
     public void MoveCorrectly_4StepsBackwards()
     {
-        var courier = Courier.Create("John Doe", Transport.Bicycle, Location.MaximumLocation).Value;
+        var courier = Courier.Create("John Doe", Transport.Bicycle, Location.MaximumLocation()).Value;
         var targetLocation = Location.Create(6, 6).Value;
 
         courier.MoveTo(targetLocation);

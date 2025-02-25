@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DeliveryApp.Infrastructure.Adapters.Postgres.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250217004049_Init")]
+    [Migration("20250223203548_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -178,7 +178,7 @@ namespace DeliveryApp.Infrastructure.Adapters.Postgres.Migrations
                                 .HasForeignKey("OrderId");
                         });
 
-                    b.OwnsOne("DeliveryApp.Core.Domain.Models.OrderAggregate.VO.OrderStatus", "Status", b1 =>
+                    b.OwnsOne("DeliveryApp.Core.Domain.Models.OrderAggregate.OrderStatus", "Status", b1 =>
                         {
                             b1.Property<Guid>("OrderId")
                                 .HasColumnType("uuid");

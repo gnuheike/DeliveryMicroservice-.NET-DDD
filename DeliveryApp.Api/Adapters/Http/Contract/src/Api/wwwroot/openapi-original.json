@@ -1,0 +1,189 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "description" : "Отвечает за учет курьеров, деспетчеризацию доставкуов, доставку",
+    "title" : "Swagger Delivery",
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "/"
+  } ],
+  "paths" : {
+    "/api/v1/orders" : {
+      "post" : {
+        "description" : "Позволяет создать заказ с целью тестирования",
+        "operationId" : "CreateOrder",
+        "responses" : {
+          "201" : {
+            "description" : "Успешный ответ"
+          },
+          "default" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Ошибка"
+          }
+        },
+        "summary" : "Создать заказ"
+      }
+    },
+    "/api/v1/orders/active" : {
+      "get" : {
+        "description" : "Позволяет получить все незавершенные",
+        "operationId" : "GetOrders",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/Order"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "Успешный ответ"
+          },
+          "default" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Ошибка"
+          }
+        },
+        "summary" : "Получить все незавершенные заказы"
+      }
+    },
+    "/api/v1/couriers/" : {
+      "get" : {
+        "description" : "Позволяет получить всех курьеров",
+        "operationId" : "GetCouriers",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/Courier"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "Успешный ответ"
+          },
+          "default" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Ошибка"
+          }
+        },
+        "summary" : "Получить всех курьеров"
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Location" : {
+        "allOf" : [ {
+          "properties" : {
+            "x" : {
+              "description" : "X",
+              "type" : "integer"
+            },
+            "y" : {
+              "description" : "Y",
+              "type" : "integer"
+            }
+          },
+          "required" : [ "x", "y" ]
+        } ],
+        "example" : {
+          "x" : 0,
+          "y" : 6
+        }
+      },
+      "Order" : {
+        "allOf" : [ {
+          "properties" : {
+            "id" : {
+              "description" : "Идентификатор",
+              "format" : "uuid",
+              "type" : "string"
+            },
+            "location" : {
+              "$ref" : "#/components/schemas/Location"
+            }
+          },
+          "required" : [ "id", "location" ]
+        } ],
+        "example" : {
+          "location" : {
+            "x" : 0,
+            "y" : 6
+          },
+          "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        }
+      },
+      "Courier" : {
+        "allOf" : [ {
+          "properties" : {
+            "id" : {
+              "description" : "Идентификатор",
+              "format" : "uuid",
+              "type" : "string"
+            },
+            "name" : {
+              "description" : "Имя",
+              "type" : "string"
+            },
+            "location" : {
+              "$ref" : "#/components/schemas/Location"
+            }
+          },
+          "required" : [ "id", "location", "name" ]
+        } ],
+        "example" : {
+          "name" : "name",
+          "location" : {
+            "x" : 0,
+            "y" : 6
+          },
+          "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        }
+      },
+      "Error" : {
+        "example" : {
+          "code" : 0,
+          "message" : "message"
+        },
+        "properties" : {
+          "code" : {
+            "description" : "Код ошибки",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "message" : {
+            "description" : "Текст ошибки",
+            "type" : "string"
+          }
+        },
+        "required" : [ "code", "message" ]
+      }
+    }
+  }
+}

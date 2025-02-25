@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using DeliveryApp.Core.Domain.Models.CourierAggregate;
 using DeliveryApp.Core.Domain.Models.OrderAggregate;
-using DeliveryApp.Core.Domain.Models.OrderAggregate.VO;
 using DeliveryApp.Core.Domain.SharedKernel;
 using FluentAssertions;
 using Xunit;
@@ -64,7 +63,7 @@ public class OrderShould
         //Assert
         result.IsSuccess.Should().BeTrue();
         order.CourierId.Should().Be(courier.Id);
-        order.Status.Should().Be(OrderStatus.Assigned);
+        order.Status.Should().Be(OrderStatus.Assigned());
     }
 
     [Fact]
@@ -81,6 +80,6 @@ public class OrderShould
         //Assert
         result.IsSuccess.Should().BeTrue();
         order.CourierId.Should().Be(courier.Id);
-        order.Status.Should().Be(OrderStatus.Completed);
+        order.Status.Should().Be(OrderStatus.Completed());
     }
 }

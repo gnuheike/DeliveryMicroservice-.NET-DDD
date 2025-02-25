@@ -1,5 +1,4 @@
 using DeliveryApp.Core.Domain.Models.OrderAggregate;
-using DeliveryApp.Core.Domain.Models.OrderAggregate.VO;
 using DeliveryApp.Core.Domain.Ports;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,17 +36,17 @@ public class PostgresOrderRepository(ApplicationDbContext dbContext) : IOrderRep
 
     public async Task<List<Order>> GetAllCreatedAsync()
     {
+        var orderCreated = OrderStatus.Created();
         return await _dbContext.Orders
-            .Include(x => x.Status)
-            .Where(x => x.Status == OrderStatus.Created)
+            .Where(x => x.Status.Name == orderCreated.Name)
             .ToListAsync();
     }
 
     public async Task<List<Order>> GetAllAssignedAsync()
     {
+        var orderAssigned = OrderStatus.Assigned();
         return await _dbContext.Orders
-            .Include(x => x.Status)
-            .Where(x => x.Status == OrderStatus.Assigned)
+            .Where(x => x.Status.Name == orderAssigned.Name)
             .ToListAsync();
     }
 }
