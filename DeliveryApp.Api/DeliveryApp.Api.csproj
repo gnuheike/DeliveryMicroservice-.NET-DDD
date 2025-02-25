@@ -52,4 +52,7 @@
         <_ContentIncludedByDefault Remove="Adapters\Http\Contract\src\DeliveryApp.Api.Adapters.Http.Contract.src.OpenApi\Properties\launchSettings.json"/>
         <_ContentIncludedByDefault Remove="Adapters\Http\Contract\src\DeliveryApp.Api.Adapters.Http.Contract.src.OpenApi\wwwroot\openapi-original.json"/>
     </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Application\UseCases\"/>
+    </ItemGroup>
 </Project>

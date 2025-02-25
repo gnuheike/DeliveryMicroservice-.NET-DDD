@@ -46,4 +46,13 @@ public class PostgresCourierRepository(ApplicationDbContext dbContext) : ICourie
             .Where(x => x.Status == CourierStatus.Free)
             .ToListAsync();
     }
+
+    public Task<List<Courier>> GetAllBusyAsync()
+    {
+        return _dbContext
+            .Couriers
+            .Include(x => x.Transport)
+            .Where(x => x.Status == CourierStatus.Busy)
+            .ToListAsync();
+    }
 }
