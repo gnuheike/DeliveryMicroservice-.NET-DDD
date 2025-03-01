@@ -1,18 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <LangVersion>12</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Confluent.Kafka" Version="2.6.0"/>
-        <PackageReference Include="Google.Protobuf" Version="3.28.2"/>
-        <PackageReference Include="Grpc.AspNetCore" Version="2.66.0"/>
-        <PackageReference Include="Grpc.Net.Client" Version="2.66.0"/>
-        <PackageReference Include="Grpc.Tools" Version="2.67.0">
+        <PackageReference Include="Confluent.Kafka" Version="2.8.0" />
+        <PackageReference Include="Google.Protobuf" Version="3.29.3" />
+        <PackageReference Include="Grpc.AspNetCore" Version="2.67.0" />
+        <PackageReference Include="Grpc.Net.Client" Version="2.67.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.70.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -25,8 +25,8 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.3"/>
-        <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.0"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+        <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.1" />
     </ItemGroup>
 
     <ItemGroup>
