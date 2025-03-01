@@ -40,15 +40,6 @@ public class Location : ValueObject
         return new Location(x, y);
     }
 
-    public static Location CreateRandom()
-    {
-        var random = new Random();
-        return new Location(
-            random.Next(MinimumLocation().X, MaximumLocation().X + 1),
-            random.Next(MinimumLocation().Y, MaximumLocation().Y + 1)
-        );
-    }
-
     public Result<Location, Error> SetX(int newWidth)
     {
         return Create(newWidth, Y);

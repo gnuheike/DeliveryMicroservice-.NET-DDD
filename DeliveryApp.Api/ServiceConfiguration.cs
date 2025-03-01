@@ -10,10 +10,13 @@ using DeliveryApp.Core.Application.UseCases.Commands.CreateOrder;
 using DeliveryApp.Core.Application.UseCases.Commands.MoveCouriers;
 using DeliveryApp.Core.Domain.Ports;
 using DeliveryApp.Core.Domain.Services;
+using DeliveryApp.Infrastructure;
+using DeliveryApp.Infrastructure.Adapters.Grps.GeoService;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Npgsql;
 using Primitives;
@@ -110,6 +113,13 @@ public static class ServiceConfiguration
     private static void DomainServices(IServiceCollection services)
     {
         services.AddSingleton<ICourierScoringService, CourierScoringService>();
+
+        services.AddSingleton(provider =>
+        {
+            var settings = provider.GetRequiredService<IOptions<Settings>>();
+            return GeoClientFactory.Create(settings);
+        });
+        services.AddSingleton<ILocationProvider, GrpsLocationProvider>();
     }
 
     private static void Database(IServiceCollection services, IConfiguration configuration)
