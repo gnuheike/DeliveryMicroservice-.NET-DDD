@@ -1,3 +1,4 @@
+using CSharpFunctionalExtensions;
 using DeliveryApp.Core.Domain.Ports;
 using DeliveryApp.Core.Domain.Services;
 using MediatR;
@@ -22,19 +23,15 @@ public class AssignOrdersCommandHandler(
 
         foreach (var order in createdOrders)
         {
-            var bestCourier = courierScoringService.FindClosestAvailableCourier(order, freeCouriers);
+            var (_, isFailure, closestCourier) = courierScoringService.FindClosestAvailableCourier(order, freeCouriers);
+            if (isFailure) continue;
 
-            if (bestCourier.IsFailure)
-            {
-                if (bestCourier.Error == CourierScoringService.Errors.NoCourierFound()) return false;
-                throw new Exception(bestCourier.Error.Message);
-            }
-
-            order.Assign(bestCourier.Value);
-            freeCouriers.Remove(bestCourier.Value);
+            order.Assign(closestCourier);
+            closestCourier.SetBusy();
+            freeCouriers.Remove(closestCourier);
 
             await orderRepository.UpdateAsync(order);
-            await courierRepository.UpdateAsync(bestCourier.Value);
+            await courierRepository.UpdateAsync(closestCourier);
         }
 
         return await unitOfWork.SaveChangesAsync(cancellationToken);
