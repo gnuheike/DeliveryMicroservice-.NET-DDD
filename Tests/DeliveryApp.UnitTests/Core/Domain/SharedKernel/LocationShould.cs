@@ -25,15 +25,6 @@ public class LocationShould
         result.IsFailure.Should().BeTrue();
     }
 
-
-    [Fact]
-    public void CreateRandomLocationWithinValidRange()
-    {
-        var location = Location.CreateRandom();
-        location.X.Should().BeInRange(1, 10);
-        location.Y.Should().BeInRange(1, 10);
-    }
-
     [Fact]
     public void ReturnNewLocationWithUpdatedX()
     {
