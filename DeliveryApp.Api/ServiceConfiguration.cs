@@ -3,6 +3,7 @@ using Api.Filters;
 using Api.OpenApi;
 using DeliveryApp.Api.Adapters.BackgroundJobs;
 using DeliveryApp.Api.Adapters.Http.Mapper;
+using DeliveryApp.Api.Adapters.Kafka;
 using DeliveryApp.Api.Application.UseCases.Queries.GetAllNonCompletedOrders;
 using DeliveryApp.Api.Application.UseCases.Queries.GetBusyCouriers;
 using DeliveryApp.Core.Application.UseCases.Commands.AssignOrders;
@@ -31,7 +32,6 @@ public static class ServiceConfiguration
         Settings(services);
         HealthChecks(services);
         Cors(services);
-
         MediatR(services);
         Quartz(services);
 
@@ -40,8 +40,20 @@ public static class ServiceConfiguration
         Database(services, configuration);
         Repositories(services);
         HttpMappers(services);
+        Kafka(services);
 
         Swagger(services);
+    }
+
+    private static void Kafka(IServiceCollection services)
+    {
+        services.Configure<HostOptions>(options =>
+        {
+            options.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
+            options.ShutdownTimeout = TimeSpan.FromSeconds(30);
+        });
+
+        services.AddHostedService(BasketConfirmedConsumerHostedServiceFactory.Create);
     }
 
     private static void HttpMappers(IServiceCollection services)
@@ -131,7 +143,7 @@ public static class ServiceConfiguration
                 sqlOptions => { sqlOptions.MigrationsAssembly("DeliveryApp.Infrastructure"); });
             options.EnableSensitiveDataLogging();
         });
-        services.AddSingleton(_ => new NpgsqlConnection(connectionString));
+        services.AddTransient(_ => new NpgsqlConnection(connectionString));
     }
 
     private static void Repositories(IServiceCollection services)
@@ -149,14 +161,15 @@ public static class ServiceConfiguration
     private static void Handlers(IServiceCollection services)
     {
         services.AddTransient<IRequestHandler<CreateOrderCommand, bool>, CreateOrderCommandHandler>();
-        services
-            .AddTransient<IRequestHandler<MoveCouriersCommand, bool>, MoveCouriersCommandHandler>();
+        services.AddTransient<IRequestHandler<MoveCouriersCommand, bool>, MoveCouriersCommandHandler>();
         services.AddTransient<IRequestHandler<AssignOrdersCommand, bool>, AssignOrdersCommandHandler>();
-        services
-            .AddTransient<IRequestHandler<GetBusyCouriersQuery, GetBusyCouriersResponse>,
-                GetBusyCouriersQueryHandler>();
-        services
-            .AddTransient<IRequestHandler<GetAllNonCompletedOrdersQuery, GetAllNonCompletedOrdersResponse>,
-                PostgresGetAllNonCompletedOrdersQueryHandler>();
+        services.AddTransient<
+            IRequestHandler<GetBusyCouriersQuery, GetBusyCouriersResponse>,
+            GetBusyCouriersQueryHandler
+        >();
+        services.AddTransient<
+            IRequestHandler<GetAllNonCompletedOrdersQuery, GetAllNonCompletedOrdersResponse>,
+            PostgresGetAllNonCompletedOrdersQueryHandler
+        >();
     }
 }
