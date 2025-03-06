@@ -3,7 +3,9 @@ using DeliveryApp.Core.Domain.Models.OrderAggregate;
 using DeliveryApp.Core.Domain.SharedKernel;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using NSubstitute;
 using Testcontainers.PostgreSql;
 using Xunit;
 
@@ -18,6 +20,8 @@ public class OrderRepositoryShould : IAsyncLifetime
         .WithPassword("secret")
         .WithCleanUp(true)
         .Build();
+
+    private readonly IMediator _mediator = Substitute.For<IMediator>();
 
     private ApplicationDbContext _context;
 
@@ -45,7 +49,7 @@ public class OrderRepositoryShould : IAsyncLifetime
         // Arrange
         var order = Order.Create(Guid.NewGuid(), Location.MinimumLocation()).Value;
         var orderRepository = new PostgresOrderRepository(_context);
-        var unitOfWork = new UnitOfWork(_context);
+        var unitOfWork = new UnitOfWork(_context, _mediator);
 
         // Act
         await orderRepository.AddAsync(order);
@@ -63,7 +67,7 @@ public class OrderRepositoryShould : IAsyncLifetime
         // Arrange
         var order = Order.Create(Guid.NewGuid(), Location.MinimumLocation()).Value;
         var orderRepository = new PostgresOrderRepository(_context);
-        var unitOfWork = new UnitOfWork(_context);
+        var unitOfWork = new UnitOfWork(_context, _mediator);
 
         await orderRepository.AddAsync(order);
         await unitOfWork.SaveChangesAsync();
@@ -102,7 +106,7 @@ public class OrderRepositoryShould : IAsyncLifetime
         order2.Assign(CreateCourier());
 
         var orderRepository = new PostgresOrderRepository(_context);
-        var unitOfWork = new UnitOfWork(_context);
+        var unitOfWork = new UnitOfWork(_context, _mediator);
 
         // Act
         await orderRepository.AddAsync(order1);
@@ -126,7 +130,7 @@ public class OrderRepositoryShould : IAsyncLifetime
 
 
         var orderRepository = new PostgresOrderRepository(_context);
-        var unitOfWork = new UnitOfWork(_context);
+        var unitOfWork = new UnitOfWork(_context, _mediator);
 
         // Act
         await orderRepository.AddAsync(order1);
