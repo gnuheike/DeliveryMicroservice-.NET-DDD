@@ -51,6 +51,8 @@
             <CompileOutputs>True</CompileOutputs>
             <OutputDir>obj\Debug/net9.0/</OutputDir>
         </Protobuf>
+        <None Remove="Adapters\Kafka\OrderCompleted\Contract.proto"/>
+        <Protobuf Include="Adapters\Kafka\OrderCompleted\Contract.proto"/>
     </ItemGroup>
 
 </Project>

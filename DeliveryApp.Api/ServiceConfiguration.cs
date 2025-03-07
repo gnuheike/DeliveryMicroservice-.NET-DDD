@@ -6,13 +6,16 @@ using DeliveryApp.Api.Adapters.Http.Mapper;
 using DeliveryApp.Api.Adapters.Kafka;
 using DeliveryApp.Api.Application.UseCases.Queries.GetAllNonCompletedOrders;
 using DeliveryApp.Api.Application.UseCases.Queries.GetBusyCouriers;
+using DeliveryApp.Core.Application.DomainEventHandlers;
 using DeliveryApp.Core.Application.UseCases.Commands.AssignOrders;
 using DeliveryApp.Core.Application.UseCases.Commands.CreateOrder;
 using DeliveryApp.Core.Application.UseCases.Commands.MoveCouriers;
+using DeliveryApp.Core.Domain.Models.OrderAggregate.DomainEvents;
 using DeliveryApp.Core.Domain.Ports;
 using DeliveryApp.Core.Domain.Services;
 using DeliveryApp.Infrastructure;
 using DeliveryApp.Infrastructure.Adapters.Grps.GeoService;
+using DeliveryApp.Infrastructure.Adapters.Kafka.OrderCompleted;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
 using MediatR;
@@ -37,12 +40,18 @@ public static class ServiceConfiguration
 
         Handlers(services);
         DomainServices(services);
+        DomainEvents(services);
         Database(services, configuration);
         Repositories(services);
         HttpMappers(services);
         Kafka(services);
 
         Swagger(services);
+    }
+
+    private static void DomainEvents(IServiceCollection services)
+    {
+        services.AddTransient<INotificationHandler<OrderCompletedDomainEvent>, OrderCompletedDomainEventHandler>();
     }
 
     private static void Kafka(IServiceCollection services)
@@ -54,6 +63,10 @@ public static class ServiceConfiguration
         });
 
         services.AddHostedService(BasketConfirmedConsumerHostedServiceFactory.Create);
+
+        services.AddTransient<IOrderCompletedMessageBusProducer, KafkaOrderCompletedMessageBusProducer>(
+            KafkaOrderCompletedMessageBusProducerFactory.Create
+        );
     }
 
     private static void HttpMappers(IServiceCollection services)
