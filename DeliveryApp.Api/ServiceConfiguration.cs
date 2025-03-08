@@ -51,6 +51,7 @@ public static class ServiceConfiguration
 
     private static void DomainEvents(IServiceCollection services)
     {
+        services.AddTransient<OutboxDomainEventsSaver>();
         services.AddTransient<INotificationHandler<OrderCompletedDomainEvent>, OrderCompletedDomainEventHandler>();
     }
 
