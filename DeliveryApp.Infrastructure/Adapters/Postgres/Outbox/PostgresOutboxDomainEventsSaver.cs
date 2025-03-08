@@ -2,9 +2,9 @@ using DeliveryApp.Infrastructure.Adapters.Postgres.Entities;
 using Newtonsoft.Json;
 using Primitives;
 
-namespace DeliveryApp.Infrastructure.Adapters.Postgres;
+namespace DeliveryApp.Infrastructure.Adapters.Postgres.Outbox;
 
-public class OutboxDomainEventsSaver(ApplicationDbContext dbContext)
+public class PostgresOutboxDomainEventsSaver(ApplicationDbContext dbContext) : IOutboxDomainEventsSaver
 {
     private readonly JsonSerializerSettings _jsonSerializerSettings = new() { TypeNameHandling = TypeNameHandling.All };
 

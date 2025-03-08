@@ -1,10 +1,11 @@
+using DeliveryApp.Infrastructure.Adapters.Postgres.Outbox;
 using Primitives;
 
 namespace DeliveryApp.Infrastructure.Adapters.Postgres;
 
 public sealed class UnitOfWork(
     ApplicationDbContext dbContext,
-    OutboxDomainEventsSaver outboxDomainEventsSaver
+    IOutboxDomainEventsSaver outboxDomainEventsSaver
 ) : IUnitOfWork, IDisposable
 {
     private readonly ApplicationDbContext _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));

@@ -18,6 +18,7 @@ using DeliveryApp.Infrastructure.Adapters.Grps.GeoService;
 using DeliveryApp.Infrastructure.Adapters.Kafka.OrderCompleted;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
 using DeliveryApp.Infrastructure.Adapters.Postgres.BackgroundJobs;
+using DeliveryApp.Infrastructure.Adapters.Postgres.Outbox;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -52,7 +53,7 @@ public static class ServiceConfiguration
 
     private static void DomainEvents(IServiceCollection services)
     {
-        services.AddTransient<OutboxDomainEventsSaver>();
+        services.AddTransient<IOutboxDomainEventsSaver, PostgresOutboxDomainEventsSaver>();
         services.AddTransient<INotificationHandler<OrderCompletedDomainEvent>, OrderCompletedDomainEventHandler>();
     }
 
