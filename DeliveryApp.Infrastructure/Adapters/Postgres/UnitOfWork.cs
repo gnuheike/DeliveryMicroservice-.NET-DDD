@@ -1,9 +1,12 @@
-using MediatR;
+using DeliveryApp.Infrastructure.Adapters.Postgres.Outbox;
 using Primitives;
 
 namespace DeliveryApp.Infrastructure.Adapters.Postgres;
 
-public sealed class UnitOfWork(ApplicationDbContext dbContext, IMediator mediator) : IUnitOfWork, IDisposable
+public sealed class UnitOfWork(
+    ApplicationDbContext dbContext,
+    IOutboxDomainEventsSaver outboxDomainEventsSaver
+) : IUnitOfWork, IDisposable
 {
     private readonly ApplicationDbContext _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
@@ -16,26 +19,10 @@ public sealed class UnitOfWork(ApplicationDbContext dbContext, IMediator mediato
 
     public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        await outboxDomainEventsSaver.Execute(cancellationToken);
         var affectedRecords = await _dbContext.SaveChangesAsync(cancellationToken);
-        if (affectedRecords == 0) return false;
 
-        await PublishDomainEventsAsync();
-        return true;
-    }
-
-    private async Task PublishDomainEventsAsync()
-    {
-        var domainEvents = _dbContext.ChangeTracker
-            .Entries<IAggregateRoot>()
-            .SelectMany(x => x.Entity.GetDomainEvents())
-            .ToList();
-
-        _dbContext.ChangeTracker
-            .Entries<IAggregateRoot>()
-            .ToList()
-            .ForEach(entity => entity.Entity.ClearDomainEvents());
-
-        foreach (var domainEvent in domainEvents) await mediator.Publish(domainEvent);
+        return affectedRecords != 0;
     }
 
     private void Dispose(bool disposing)

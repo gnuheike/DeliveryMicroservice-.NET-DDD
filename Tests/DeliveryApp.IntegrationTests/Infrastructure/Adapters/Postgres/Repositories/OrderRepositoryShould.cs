@@ -2,8 +2,8 @@ using DeliveryApp.Core.Domain.Models.CourierAggregate;
 using DeliveryApp.Core.Domain.Models.OrderAggregate;
 using DeliveryApp.Core.Domain.SharedKernel;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
+using DeliveryApp.Infrastructure.Adapters.Postgres.Outbox;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using Testcontainers.PostgreSql;
@@ -21,7 +21,8 @@ public class OrderRepositoryShould : IAsyncLifetime
         .WithCleanUp(true)
         .Build();
 
-    private readonly IMediator _mediator = Substitute.For<IMediator>();
+    private readonly IOutboxDomainEventsSaver _outboxDomainEventsSaver =
+        Substitute.For<IOutboxDomainEventsSaver>();
 
     private ApplicationDbContext _context;
 
@@ -49,7 +50,7 @@ public class OrderRepositoryShould : IAsyncLifetime
         // Arrange
         var order = Order.Create(Guid.NewGuid(), Location.MinimumLocation()).Value;
         var orderRepository = new PostgresOrderRepository(_context);
-        var unitOfWork = new UnitOfWork(_context, _mediator);
+        var unitOfWork = new UnitOfWork(_context, _outboxDomainEventsSaver);
 
         // Act
         await orderRepository.AddAsync(order);
@@ -67,7 +68,7 @@ public class OrderRepositoryShould : IAsyncLifetime
         // Arrange
         var order = Order.Create(Guid.NewGuid(), Location.MinimumLocation()).Value;
         var orderRepository = new PostgresOrderRepository(_context);
-        var unitOfWork = new UnitOfWork(_context, _mediator);
+        var unitOfWork = new UnitOfWork(_context, _outboxDomainEventsSaver);
 
         await orderRepository.AddAsync(order);
         await unitOfWork.SaveChangesAsync();
@@ -106,7 +107,7 @@ public class OrderRepositoryShould : IAsyncLifetime
         order2.Assign(CreateCourier());
 
         var orderRepository = new PostgresOrderRepository(_context);
-        var unitOfWork = new UnitOfWork(_context, _mediator);
+        var unitOfWork = new UnitOfWork(_context, _outboxDomainEventsSaver);
 
         // Act
         await orderRepository.AddAsync(order1);
@@ -130,7 +131,7 @@ public class OrderRepositoryShould : IAsyncLifetime
 
 
         var orderRepository = new PostgresOrderRepository(_context);
-        var unitOfWork = new UnitOfWork(_context, _mediator);
+        var unitOfWork = new UnitOfWork(_context, _outboxDomainEventsSaver);
 
         // Act
         await orderRepository.AddAsync(order1);

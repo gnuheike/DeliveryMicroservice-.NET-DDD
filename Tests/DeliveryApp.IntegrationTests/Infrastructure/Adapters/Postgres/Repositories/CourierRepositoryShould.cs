@@ -1,8 +1,8 @@
 using DeliveryApp.Core.Domain.Models.CourierAggregate;
 using DeliveryApp.Core.Domain.SharedKernel;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
+using DeliveryApp.Infrastructure.Adapters.Postgres.Outbox;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using Testcontainers.PostgreSql;
@@ -21,10 +21,13 @@ public class CourierRepositoryShould : IAsyncLifetime
         .Build();
 
     private readonly Location _location = Location.MinimumLocation();
+
+    private readonly IOutboxDomainEventsSaver _outboxDomainEventsSaver =
+        Substitute.For<IOutboxDomainEventsSaver>();
+
     private readonly Transport _transport = Transport.Bicycle;
 
     private ApplicationDbContext _context;
-    private readonly IMediator _mediator = Substitute.For<IMediator>();
 
     public async Task InitializeAsync()
     {
@@ -50,7 +53,7 @@ public class CourierRepositoryShould : IAsyncLifetime
         // Arrange
         var courier = Courier.Create("name", _transport, _location).Value;
         var courierRepository = new PostgresCourierRepository(_context);
-        var unitOfWork = new UnitOfWork(_context, _mediator);
+        var unitOfWork = new UnitOfWork(_context, _outboxDomainEventsSaver);
 
         // Act
         await courierRepository.AddAsync(courier);
@@ -67,7 +70,7 @@ public class CourierRepositoryShould : IAsyncLifetime
         // Arrange
         var courier = Courier.Create("name", _transport, _location).Value;
         var courierRepository = new PostgresCourierRepository(_context);
-        var unitOfWork = new UnitOfWork(_context, _mediator);
+        var unitOfWork = new UnitOfWork(_context, _outboxDomainEventsSaver);
 
         await courierRepository.AddAsync(courier);
         await unitOfWork.SaveChangesAsync();
@@ -92,7 +95,7 @@ public class CourierRepositoryShould : IAsyncLifetime
         courier3.SetBusy();
 
         var courierRepository = new PostgresCourierRepository(_context);
-        var unitOfWork = new UnitOfWork(_context, _mediator);
+        var unitOfWork = new UnitOfWork(_context, _outboxDomainEventsSaver);
 
         // Act
         await courierRepository.AddAsync(courier1);

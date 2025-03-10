@@ -17,6 +17,8 @@ using DeliveryApp.Infrastructure;
 using DeliveryApp.Infrastructure.Adapters.Grps.GeoService;
 using DeliveryApp.Infrastructure.Adapters.Kafka.OrderCompleted;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
+using DeliveryApp.Infrastructure.Adapters.Postgres.BackgroundJobs;
+using DeliveryApp.Infrastructure.Adapters.Postgres.Outbox;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +53,7 @@ public static class ServiceConfiguration
 
     private static void DomainEvents(IServiceCollection services)
     {
+        services.AddTransient<IOutboxDomainEventsSaver, PostgresOutboxDomainEventsSaver>();
         services.AddTransient<INotificationHandler<OrderCompletedDomainEvent>, OrderCompletedDomainEventHandler>();
     }
 
@@ -98,23 +101,37 @@ public static class ServiceConfiguration
 
     private static void Quartz(IServiceCollection services)
     {
-        // CRON Jobs
         services.AddQuartz(configure =>
         {
             var assignOrdersJobKey = new JobKey(nameof(AssignOrdersJob));
-            var moveCouriersJobKey = new JobKey(nameof(MoveCouriersJob));
             configure
                 .AddJob<AssignOrdersJob>(assignOrdersJobKey)
                 .AddTrigger(
                     trigger => trigger.ForJob(assignOrdersJobKey)
                         .WithSimpleSchedule(
                             schedule => schedule.WithIntervalInSeconds(1)
-                                .RepeatForever()))
+                                .RepeatForever()));
+        });
+        services.AddQuartz(configure =>
+        {
+            var moveCouriersJobKey = new JobKey(nameof(MoveCouriersJob));
+            configure
                 .AddJob<MoveCouriersJob>(moveCouriersJobKey)
                 .AddTrigger(
                     trigger => trigger.ForJob(moveCouriersJobKey)
                         .WithSimpleSchedule(
                             schedule => schedule.WithIntervalInSeconds(2)
+                                .RepeatForever()));
+        });
+        services.AddQuartz(configure =>
+        {
+            var outboxMessagesProcessorJobKey = new JobKey(nameof(OutboxMessagesProcessorBackgroundJob));
+            configure
+                .AddJob<OutboxMessagesProcessorBackgroundJob>(outboxMessagesProcessorJobKey)
+                .AddTrigger(
+                    trigger => trigger.ForJob(outboxMessagesProcessorJobKey)
+                        .WithSimpleSchedule(
+                            schedule => schedule.WithIntervalInSeconds(3)
                                 .RepeatForever()));
         });
         services.AddQuartzHostedService();
