@@ -1,37 +1,34 @@
-[![.NET](https://github.com/gnuheike/delivery/actions/workflows/dotnet.yml/badge.svg)](https://github.com/gnuheike/delivery/actions/workflows/dotnet.yml)
+[![.NET](https://github.com/gnuheike/DeliveryMicroservice-.NET-DDD/actions/workflows/dotnet.yml/badge.svg)](https://github.com/gnuheike/DeliveryMicroservice-.NET-DDD/actions/workflows/dotnet.yml)
+
+[![Delivery App Microservice](https://github.com/gnuheike/DeliveryMicroservice-.NET-DDD/blob/main/cover.jpg?raw=true)](https://github.com/gnuheike/DeliveryMicroservice-.NET-DDD)
+
 
 # Delivery App Microservice
 
-Delivery App is a full‐stack delivery management microservice designed using domain–driven design principles and CQRS. It manages orders, assigns available couriers, tracks courier movements and uses background jobs and messaging to ensure eventual consistency. The application exposes a RESTful API for clients and integrates with external systems (e.g. Geo service via gRPC and Kafka message brokers).
+**Delivery App Microservice** is a robust, full-stack solution for managing delivery operations, designed with scalability and maintainability in mind. Built using Domain-Driven Design (DDD) and CQRS, it orchestrates the entire delivery process—from order creation and courier assignment to dispatch and completion. The microservice exposes a RESTful API and integrates with external systems, such as a Geo service via gRPC and Kafka for real-time event streaming, ensuring a responsive and reliable system.
 
 ---
 
-## Modules and Components
+## Architecture and Design
 
-- **DeliveryApp.Api**  
-  – Contains the ASP.NET Core API endpoints, controllers and background jobs.  
-  – Implements HTTP adapters (controllers, formatters, attributes, mappers) and Kafka consumers (e.g. BasketConfirmedConsumerHostedService).  
-  – Configures Swagger and defines global API behaviors.
-
-- **DeliveryApp.Core**  
-  – Holds the domain models (Order, Courier, Transport, Value Objects) and domain services.  
-  – Implements use cases (commands and queries) via MediatR.  
-  – Manages domain events and aggregates following DDD principles.
-
-- **DeliveryApp.Infrastructure**  
-  – Provides persistence using EF Core with PostgreSQL; repositories are implemented here.  
-  – Implements the outbox pattern to reliably dispatch domain events.  
-  – Includes adapters for external services such as a GRPC-based Geo service and Kafka message bus producers.
-
-- **Tests**  
-  – Contains integration and unit tests to validate API endpoints, domain models, services, and repository behavior.
-  
-- **Utils/Primitives**  
-  – Implements common abstractions such as aggregates, domain events, error handling and unit-of-work patterns used across the solution.
+The project adheres to modern architectural principles:
+* Domain-Driven Design (DDD): Encapsulates business logic within aggregates, entities, and value objects.
+* CQRS with MediatR: Separates command and query responsibilities for optimized performance and clarity.
+* Outbox Pattern: Guarantees reliable event publishing to external systems.
 
 ---
 
-## Patterns, Techniques, and Technologies
+## Technologies Used
+* Backend: ASP.NET Core, Entity Framework Core, PostgreSQL
+* Messaging: Kafka (Confluent.Kafka)
+* Background Jobs: Quartz.NET
+* External Services: gRPC
+* Testing: xUnit, Moq
+* Documentation: Swagger (Swashbuckle)
+
+---
+
+## Patterns and Techniques
 
 - **Domain–Driven Design (DDD)**  
   Encapsulates business logic in aggregates, entities, value objects and domain events.
@@ -80,147 +77,12 @@ Delivery App is a full‐stack delivery management microservice designed using d
 
 ## Project Structure
 
-Below is a high-level directory breakdown:
-
-```
-DeliveryApp.Api/
-├── Adapters/
-│   ├── BackgroundJobs/
-│   │   ├── AssignOrdersJob.cs
-│   │   └── MoveCouriersJob.cs
-│   ├── Http/
-│   │   ├── Contract/
-│   │   │   ├── Api/
-│   │   │   │   ├── Controllers/
-│   │   │   │   │   └── DefaultApi.cs
-│   │   │   │   ├── Models/
-│   │   │   │   │   ├── Courier.cs
-│   │   │   │   │   ├── Error.cs
-│   │   │   │   │   ├── Location.cs
-│   │   │   │   │   └── Order.cs
-│   │   │   │   ├── Filters/
-│   │   │   │   │   └── GeneratePathParamsValidationFilter.cs
-│   │   │   │   ├── Formatters/
-│   │   │   │   │   └── InputFormatterStream.cs
-│   │   │   │   └── Startup.cs, Program.cs, etc.
-│   │   └── Mapper/
-│   │       ├── CouriersMapper.cs
-│   │       └── OrderMapper.cs
-│   └── Kafka/
-│       ├── BasketConfirmedConsumerHostedService.cs
-│       └── BasketConfirmedConsumerHostedServiceFactory.cs
-├── Application/
-│   └── UseCases/
-│       ├── Commands/
-│       │   ├── CreateOrder/
-│       │   │   ├── CreateOrderCommand.cs
-│       │   │   └── CreateOrderCommandHandler.cs
-│       │   ├── AssignOrders/
-│       │   │   ├── AssignOrdersCommand.cs
-│       │   │   └── AssignOrdersCommandHandler.cs
-│       │   └── MoveCouriers/
-│       │       ├── MoveCouriersCommand.cs
-│       │       └── MoveCouriersCommandHandler.cs
-│       └── Queries/
-│           ├── GetAllNonCompletedOrders/
-│           │   ├── GetAllNonCompletedOrdersQuery.cs
-│           │   ├── GetAllNonCompletedOrdersResponse.cs
-│           │   └── PostgresGetAllNonCompletedOrdersQueryHandler.cs
-│           └── GetBusyCouriers/
-│               ├── GetBusyCouriersQuery.cs
-│               ├── GetBusyCouriersQueryHandler.cs
-│               └── GetBusyCouriersResponse.cs
-├── ServiceConfiguration.cs
-└── SettingsSetup.cs
-
-DeliveryApp.Core/
-├── Application/
-│   └── DomainEventHandlers/
-│       └── OrderCompletedDomainEventHandler.cs
-├── Domain/
-│   ├── Models/
-│   │   ├── CourierAggregate/
-│   │   │   ├── Courier.cs
-│   │   │   ├── CourierStatus.cs
-│   │   │   └── Transport.cs
-│   │   └── OrderAggregate/
-│   │       ├── Order.cs
-│   │       ├── OrderStatus.cs
-│   │       └── DomainEvents/
-│   │           └── OrderCompletedDomainEvent.cs
-│   ├── Ports/
-│   │   ├── ICourierRepository.cs
-│   │   ├── IOrderRepository.cs
-│   │   └── ILocationProvider.cs
-│   └── Services/
-│       ├── CourierScoringService.cs
-│       └── IOrderCompletedMessageBusProducer.cs
-└── SharedKernel/
-    └── Location.cs
-
-DeliveryApp.Infrastructure/
-├── Adapters/
-│   ├── Grps/
-│   │   ├── GeoService/
-│   │   │   ├── GeoClientFactory.cs
-│   │   │   └── GrpsLocationProvider.cs
-│   │   └── Kafka/
-│   │       └── OrderCompleted/
-│   │           ├── KafkaOrderCompletedMessageBusProducer.cs
-│   │           └── KafkaOrderCompletedMessageBusProducerFactory.cs
-│   └── Postgres/
-│       ├── ApplicationDbContext.cs
-│       ├── BackgroundJobs/
-│       │   └── OutboxMessagesProcessorBackgroundJob.cs
-│       ├── Entities/
-│       │   └── OutBoxMessage.cs
-│       ├── EntityConfigurations/
-│       │   ├── CourierAggregate/
-│       │   │   ├── CourierEntityTypeConfiguration.cs
-│       │   │   └── TransportEntityTypeConfiguration.cs
-│       │   ├── OrderAggregate/
-│       │   │   └── OrderEntityTypeConfiguration.cs
-│       │   └── Outbox/
-│       │       └── OutboxEntityTypeConfiguration.cs
-│       ├── Migrations/
-│       ├── Outbox/
-│       │   ├── IOutboxDomainEventsSaver.cs
-│       │   └── PostgresOutboxDomainEventsSaver.cs
-│       └── Repositories/
-│           ├── PostgresCourierRepository.cs
-│           └── PostgresOrderRepository.cs
-├── Settings.cs
-└── UnitOfWork.cs
-
-Tests/
-├── DeliveryApp.IntegrationTests/
-│   └── Infrastructure/Adapters/Postgres/Repositories/
-│       ├── CourierRepositoryShould.cs
-│       └── OrderRepositoryShould.cs
-└── DeliveryApp.UnitTests/
-    ├── Application/UseCases/Commands/CreateOrderCommandShould.cs
-    ├── Core/Domain/Model/
-    │   ├── CourierAggregate/
-    │   │   ├── CourierShould.cs
-    │   │   └── CourierStatusShould.cs
-    │   ├── OrderAggregate/
-    │   │   ├── OrderShould.cs
-    │   │   └── OrderStatusShould.cs
-    │   └── SharedKernel/
-    │       └── LocationShould.cs
-    └── Core/Domain/Service/
-        └── DispatchServiceShould.cs
-
-Utils/Primitives/
-├── Aggregate.cs
-├── DomainEvent.cs
-├── Error.cs
-├── GenaralErrors.cs
-├── IRepository.cs
-├── IUnitOfWork.cs
-└── Extensions/
-    └── StringExtension.cs
-```
+The solution is organized following clean architecture principles:
+* DeliveryApp.Api: RESTful API layer with controllers, background jobs, and Kafka consumers.
+* DeliveryApp.Core: Domain layer containing models, services, and use cases.
+* DeliveryApp.Infrastructure: Persistence with EF Core, external service adapters, and the outbox pattern.
+* Tests: Unit and integration tests for comprehensive validation.
+* Utils/Primitives: Shared utilities and abstractions (e.g., aggregates, domain events).
 
 ---
 
@@ -335,28 +197,7 @@ This approach encapsulates creation logic, validation and domain events to keep 
    ```bash
    dotnet test
    ```
-
----
-
-## Contributing
-
-Contributions are welcome. To contribute:
-
-1. Fork the repository.
-2. Create a feature branch:  
-   ```bash
-   git checkout -b feature/YourFeature
-   ```
-3. Commit your changes with clear commit messages.
-4. Push to your branch and create a pull request.
-5. Follow the style guidelines used in the project.
-
 ---
 
 ## License
-
-This project is published with no specific license (“NoLicense”) as specified in the API documentation. For further use or redistribution, please contact the maintainers.
-
----
-
-This README provides a concise technical overview of the project, its architecture, key features, and setup steps. For additional details refer to the in–code comments and documentation in each module.
+This project has no specific license. For use or redistribution, please contact the maintainers.
