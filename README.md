@@ -1,3 +1,5 @@
+[![.NET](https://github.com/gnuheike/delivery/actions/workflows/dotnet.yml/badge.svg)](https://github.com/gnuheike/delivery/actions/workflows/dotnet.yml)
+
 # Delivery App Microservice
 
 Delivery App is a full‐stack delivery management microservice designed using domain–driven design principles and CQRS. It manages orders, assigns available couriers, tracks courier movements and uses background jobs and messaging to ensure eventual consistency. The application exposes a RESTful API for clients and integrates with external systems (e.g. Geo service via gRPC and Kafka message brokers).
