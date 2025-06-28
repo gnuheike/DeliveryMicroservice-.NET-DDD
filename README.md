@@ -196,8 +196,4 @@ This approach encapsulates creation logic, validation and domain events to keep 
    Execute unit and integration tests using your preferred test runner:
    ```bash
    dotnet test
-   ```
----
-
-## License
-This project has no specific license. For use or redistribution, please contact the maintainers.
+   ``
